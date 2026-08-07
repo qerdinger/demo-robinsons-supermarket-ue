@@ -76,7 +76,8 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
   const button = nav.querySelector('.nav-hamburger button');
   document.body.style.overflowY = (expanded || isDesktop.matches) ? '' : 'hidden';
   nav.setAttribute('aria-expanded', expanded ? 'false' : 'true');
-  toggleAllNavSections(navSections, expanded || isDesktop.matches ? 'false' : 'true');
+  // always start with sub-menus collapsed, whether the drawer is opening or closing
+  toggleAllNavSections(navSections, 'false');
   button.setAttribute('aria-label', expanded ? 'Open navigation' : 'Close navigation');
   // enable nav dropdown keyboard accessibility
   if (navSections) {
@@ -124,11 +125,22 @@ export default async function decorate(block) {
   nav.id = 'nav';
   while (fragment.firstElementChild) nav.append(fragment.firstElementChild);
 
-  const classes = ['brand', 'sections', 'tools'];
+  const classes = ['brand', 'sections', 'tools', 'social'];
   classes.forEach((c, i) => {
     const section = nav.children[i];
     if (section) section.classList.add(`nav-${c}`);
   });
+
+  // group the links + social content into a single drawer panel that slides in
+  // below the nav bar, so the bar itself always stays visible and in place
+  const navSectionsEl = nav.querySelector('.nav-sections');
+  const navSocialEl = nav.querySelector('.nav-social');
+  const navToolsEl = nav.querySelector('.nav-tools');
+  const drawerPanel = document.createElement('div');
+  drawerPanel.className = 'nav-drawer-panel';
+  if (navSectionsEl) drawerPanel.append(navSectionsEl);
+  if (navSocialEl) drawerPanel.append(navSocialEl);
+  nav.insertBefore(drawerPanel, navToolsEl);
 
   const navBrand = nav.querySelector('.nav-brand');
   const brandLink = navBrand.querySelector('.button');
@@ -142,11 +154,9 @@ export default async function decorate(block) {
     navSections.querySelectorAll(':scope .default-content-wrapper > ul > li').forEach((navSection) => {
       if (navSection.querySelector('ul')) navSection.classList.add('nav-drop');
       navSection.addEventListener('click', () => {
-        if (isDesktop.matches) {
-          const expanded = navSection.getAttribute('aria-expanded') === 'true';
-          toggleAllNavSections(navSections);
-          navSection.setAttribute('aria-expanded', expanded ? 'false' : 'true');
-        }
+        const expanded = navSection.getAttribute('aria-expanded') === 'true';
+        toggleAllNavSections(navSections);
+        navSection.setAttribute('aria-expanded', expanded ? 'false' : 'true');
       });
     });
   }
@@ -160,9 +170,9 @@ export default async function decorate(block) {
   hamburger.addEventListener('click', () => toggleMenu(nav, navSections));
   nav.prepend(hamburger);
   nav.setAttribute('aria-expanded', 'false');
-  // prevent mobile nav behavior on window resize
-  toggleMenu(nav, navSections, isDesktop.matches);
-  isDesktop.addEventListener('change', () => toggleMenu(nav, navSections, isDesktop.matches));
+  // start closed, and close again if the viewport crosses the desktop breakpoint
+  toggleMenu(nav, navSections, false);
+  isDesktop.addEventListener('change', () => toggleMenu(nav, navSections, false));
 
   const navWrapper = document.createElement('div');
   navWrapper.className = 'nav-wrapper';

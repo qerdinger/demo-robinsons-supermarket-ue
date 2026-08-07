@@ -21,31 +21,44 @@ header nav {
   font-family: var(--body-font-family);
 }
 
-header nav[aria-expanded='true'] {
-  grid-template:
-    'hamburger brand' var(--nav-height)
-    'sections sections' 1fr
-    'tools tools' var(--nav-height) / auto 1fr;
+/* the nav bar itself never moves — it stays fixed at the top, on scroll,
+   at any width, and while the drawer panel below is open */
+header .nav-drawer-panel {
+  display: contents;
+}
+
+header nav[aria-expanded='true'] .nav-drawer-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+  position: fixed;
+  top: var(--nav-height);
+  left: 0;
+  width: min(85vw, 320px);
+  height: calc(100dvh - var(--nav-height));
+  padding: 20px 24px 24px;
   overflow-y: auto;
-  min-height: 100dvh;
+  background-color: var(--background-color);
+  box-shadow: 2px 0 16px rgb(0 0 0 / 25%);
+  z-index: 2;
+}
+
+header .nav-wrapper:has(nav[aria-expanded='true'])::before {
+  content: '';
+  position: fixed;
+  inset: var(--nav-height) 0 0 0;
+  background-color: rgb(0 0 0 / 45%);
+  z-index: 1;
 }
 
 @media (width >= 900px) {
-  header .nav-wrapper {
-    position: relative;
-  }
-
   header nav {
     display: flex;
     justify-content: space-between;
     gap: 0 32px;
     max-width: 1264px;
     padding: 0 32px;
-  }
-
-  header nav[aria-expanded='true'] {
-    min-height: 0;
-    overflow: visible;
   }
 }
 
@@ -58,12 +71,13 @@ header nav a:any-link {
   color: currentcolor;
 }
 
-/* hamburger */
+/* hamburger — always visible; opens the drawer at any width */
 header nav .nav-hamburger {
   grid-area: hamburger;
   height: 22px;
   display: flex;
   align-items: center;
+  flex-shrink: 0;
 }
 
 header nav .nav-hamburger button {
@@ -132,25 +146,25 @@ header nav[aria-expanded='true'] .nav-hamburger-icon::after {
   transform: rotate(-45deg);
 }
 
-@media (width >= 900px) {
-  header nav .nav-hamburger {
-    display: none;
-    visibility: hidden;
-  }
-}
-
 /* brand */
 header .nav-brand {
   grid-area: brand;
-  flex-basis: 128px;
+  flex-basis: auto;
+  flex-shrink: 0;
   font-size: var(--heading-font-size-s);
   font-weight: 700;
   line-height: 1;
 }
 
 header nav .nav-brand img {
-  width: 128px;
-  height: auto;
+  width: auto;
+  height: 28px;
+}
+
+@media (width >= 600px) {
+  header nav .nav-brand img {
+    height: 32px;
+  }
 }
 
 /* sections */
@@ -185,41 +199,88 @@ header nav .nav-sections ul > li > ul > li {
   font-weight: 400;
 }
 
+/* these two items only matter inside the full drawer — hidden from the compact bar */
+header nav:not([aria-expanded='true']) .nav-sections .default-content-wrapper > ul > li:nth-child(4),
+header nav:not([aria-expanded='true']) .nav-sections .default-content-wrapper > ul > li:nth-child(5) {
+  display: none;
+}
+
+/* "Partner with Us" reads as a pill link rather than a plain nav item */
+header nav .nav-sections .default-content-wrapper > ul > li:nth-child(4) > a:any-link {
+  display: inline-block;
+  padding: 4px 16px;
+  border: 1px solid currentcolor;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+/* dropdown chevron, usable at any width now that the drawer isn't mobile-only */
+header nav .nav-sections .nav-drop {
+  position: relative;
+  padding-right: 16px;
+  cursor: pointer;
+}
+
+header nav .nav-sections .nav-drop::after {
+  content: '';
+  display: inline-block;
+  position: absolute;
+  top: 0.5em;
+  right: 2px;
+  transform: rotate(135deg);
+  width: 6px;
+  height: 6px;
+  border: 2px solid currentcolor;
+  border-radius: 0 1px 0 0;
+  border-width: 2px 2px 0 0;
+}
+
+header nav .nav-sections .nav-drop[aria-expanded='true']::after {
+  top: unset;
+  bottom: 0.5em;
+  transform: rotate(315deg);
+}
+
+/* inline expand inside the drawer — higher specificity wins over the desktop popup below at any width */
+header nav[aria-expanded='true'] .nav-sections .default-content-wrapper > ul > li > ul {
+  display: none;
+  position: static;
+  width: auto;
+  padding: 8px 0 0 16px;
+  margin: 8px 0 0;
+  background: none;
+  white-space: normal;
+}
+
+header nav[aria-expanded='true'] .nav-sections .default-content-wrapper > ul > li[aria-expanded='true'] > ul {
+  display: block;
+}
+
+/* keep the chevron pinned by the label text, not the bottom of the now-tall <li> */
+header nav[aria-expanded='true'] .nav-sections .nav-drop[aria-expanded='true']::after {
+  top: 0.5em;
+  bottom: auto;
+  transform: rotate(315deg);
+}
+
+header nav[aria-expanded='true'] .nav-sections .default-content-wrapper > ul > li > ul::before {
+  content: none;
+}
+
+/* force vertical stacking inside the drawer, overriding the horizontal desktop-bar layout below */
+header nav[aria-expanded='true'] .nav-sections ul {
+  display: block;
+}
+
+header nav[aria-expanded='true'] .nav-sections .default-content-wrapper > ul > li {
+  flex: initial;
+}
+
 @media (width >= 900px) {
   header nav .nav-sections {
     display: block;
     visibility: visible;
     white-space: nowrap;
-  }
-
-  header nav[aria-expanded='true'] .nav-sections {
-    align-self: unset;
-  }
-
-  header nav .nav-sections .nav-drop {
-    position: relative;
-    padding-right: 16px;
-    cursor: pointer;
-  }
-
-  header nav .nav-sections .nav-drop::after {
-    content: '';
-    display: inline-block;
-    position: absolute;
-    top: 0.5em;
-    right: 2px;
-    transform: rotate(135deg);
-    width: 6px;
-    height: 6px;
-    border: 2px solid currentcolor;
-    border-radius: 0 1px 0 0;
-    border-width: 2px 2px 0 0;
-  }
-
-  header nav .nav-sections .nav-drop[aria-expanded='true']::after {
-    top: unset;
-    bottom: 0.5em;
-    transform: rotate(315deg);
   }
 
   header nav .nav-sections ul {
@@ -269,4 +330,83 @@ header nav .nav-sections ul > li > ul > li {
 /* tools */
 header nav .nav-tools {
   grid-area: tools;
+  flex-shrink: 0;
+}
+
+header nav .nav-tools p,
+header nav .nav-social > p:nth-last-child(2) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+}
+
+header nav .nav-tools a:any-link,
+header nav .nav-social > p:nth-last-child(2) a:any-link {
+  display: inline-flex;
+  align-items: center;
+  height: 36px;
+  padding: 0 20px;
+  border-radius: 999px;
+  background-color: #78be20;
+  color: #fff;
+  font-weight: 700;
+  font-size: var(--body-font-size-s);
+  white-space: nowrap;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+
+header nav .nav-tools a:any-link:hover,
+header nav .nav-tools a:any-link:focus,
+header nav .nav-social > p:nth-last-child(2) a:any-link:hover,
+header nav .nav-social > p:nth-last-child(2) a:any-link:focus {
+  background-color: #e2231a;
+}
+
+/* social — drawer-only: "stay connected" text, social icons, CTA, copyright */
+header nav .nav-social {
+  display: none;
+}
+
+header nav[aria-expanded='true'] .nav-social {
+  display: block;
+  width: 100%;
+}
+
+header nav .nav-social > p:first-child {
+  font-size: var(--body-font-size-s);
+  margin-bottom: 12px;
+}
+
+header nav .nav-social ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  list-style: none;
+  padding: 0;
+  margin: 0 0 20px;
+}
+
+header nav .nav-social .icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid currentcolor;
+}
+
+header nav .nav-social .icon img {
+  width: 18px;
+  height: 18px;
+}
+
+header nav .nav-social > p:last-child {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--light-color, #d3d3d3);
+  font-size: 13px;
+  color: #767676;
 }
