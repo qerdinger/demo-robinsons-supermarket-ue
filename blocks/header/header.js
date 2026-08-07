@@ -142,6 +142,11 @@ export default async function decorate(block) {
   if (navSocialEl) drawerPanel.append(navSocialEl);
   nav.insertBefore(drawerPanel, navToolsEl);
 
+  // social icons are served from DAM rather than the code bundle
+  navSocialEl?.querySelectorAll('.icon img[data-icon-name]').forEach((img) => {
+    img.src = `/content/dam/robinsonssupermarket/icons/${img.dataset.iconName}.svg`;
+  });
+
   const navBrand = nav.querySelector('.nav-brand');
   const brandLink = navBrand.querySelector('.button');
   if (brandLink) {
