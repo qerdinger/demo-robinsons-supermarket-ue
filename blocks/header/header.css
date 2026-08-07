@@ -175,12 +175,6 @@ header nav .nav-sections {
   visibility: hidden;
 }
 
-header nav[aria-expanded='true'] .nav-sections {
-  display: block;
-  visibility: visible;
-  align-self: start;
-}
-
 header nav .nav-sections ul {
   list-style: none;
   padding-left: 0;
@@ -233,41 +227,6 @@ header nav .nav-sections .nav-drop[aria-expanded='true']::after {
   top: unset;
   bottom: 0.5em;
   transform: rotate(315deg);
-}
-
-/* force vertical stacking inside the drawer, overriding the horizontal desktop-bar layout below */
-header nav[aria-expanded='true'] .nav-sections ul {
-  display: block;
-}
-
-header nav[aria-expanded='true'] .nav-sections .default-content-wrapper > ul > li {
-  flex: initial;
-}
-
-/* inline expand inside the drawer — higher specificity wins over the desktop popup below at any width */
-header nav[aria-expanded='true'] .nav-sections .default-content-wrapper > ul > li > ul {
-  display: none;
-  position: static;
-  width: auto;
-  padding: 8px 0 0 16px;
-  margin: 8px 0 0;
-  background: none;
-  white-space: normal;
-}
-
-header nav[aria-expanded='true'] .nav-sections .default-content-wrapper > ul > li[aria-expanded='true'] > ul {
-  display: block;
-}
-
-/* keep the chevron pinned by the label text, not the bottom of the now-tall <li> */
-header nav[aria-expanded='true'] .nav-sections .nav-drop[aria-expanded='true']::after {
-  top: 0.5em;
-  bottom: auto;
-  transform: rotate(315deg);
-}
-
-header nav[aria-expanded='true'] .nav-sections .default-content-wrapper > ul > li > ul::before {
-  content: none;
 }
 
 @media (width >= 900px) {
@@ -364,7 +323,20 @@ header nav[aria-expanded='true'] .nav-social {
   width: 100%;
 }
 
-header nav .nav-social > p:first-child {
+/* "Partner with Us" reads as a pill link rather than a plain nav item */
+header nav .nav-social .default-content-wrapper > p:first-child a:any-link {
+  display: inline-block;
+  padding: 4px 16px;
+  border: 1px solid currentcolor;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+header nav .nav-social .default-content-wrapper > p:nth-child(2) {
+  margin-bottom: 12px;
+}
+
+header nav .nav-social .default-content-wrapper > p:nth-child(3) {
   font-size: var(--body-font-size-s);
   margin-bottom: 12px;
 }
@@ -385,7 +357,7 @@ header nav .nav-social .icon img {
 }
 
 /* Shop Online CTA inside the drawer, styled the same as the nav-tools buttons above */
-header nav .nav-social > p:nth-last-child(2) a:any-link {
+header nav .nav-social .default-content-wrapper > p:nth-last-child(2) a:any-link {
   display: inline-flex;
   align-items: center;
   height: 36px;
@@ -400,30 +372,15 @@ header nav .nav-social > p:nth-last-child(2) a:any-link {
   transition: background-color 0.2s ease;
 }
 
-header nav .nav-social > p:nth-last-child(2) a:any-link:hover,
-header nav .nav-social > p:nth-last-child(2) a:any-link:focus {
+header nav .nav-social .default-content-wrapper > p:nth-last-child(2) a:any-link:hover,
+header nav .nav-social .default-content-wrapper > p:nth-last-child(2) a:any-link:focus {
   background-color: #e2231a;
 }
 
-header nav .nav-social > p:last-child {
+header nav .nav-social .default-content-wrapper > p:last-child {
   margin-top: 20px;
   padding-top: 16px;
   border-top: 1px solid var(--light-color, #d3d3d3);
   font-size: 13px;
   color: #767676;
-}
-
-/* these two items only matter inside the full drawer — hidden from the compact bar */
-header nav:not([aria-expanded='true']) .nav-sections .default-content-wrapper > ul > li:nth-child(4),
-header nav:not([aria-expanded='true']) .nav-sections .default-content-wrapper > ul > li:nth-child(5) {
-  display: none;
-}
-
-/* "Partner with Us" reads as a pill link rather than a plain nav item */
-header nav .nav-sections .default-content-wrapper > ul > li:nth-child(4) > a:any-link {
-  display: inline-block;
-  padding: 4px 16px;
-  border: 1px solid currentcolor;
-  border-radius: 999px;
-  font-weight: 600;
 }

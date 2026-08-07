@@ -131,16 +131,16 @@ export default async function decorate(block) {
     if (section) section.classList.add(`nav-${c}`);
   });
 
-  // group the links + social content into a single drawer panel that slides in
-  // below the nav bar, so the bar itself always stays visible and in place
-  const navSectionsEl = nav.querySelector('.nav-sections');
+  // the social content is drawer-only extra content — move it into a panel that
+  // slides in below the bar. nav-sections/nav-tools are NOT touched here, so the
+  // bar itself always looks the same whether the drawer is open or closed
   const navSocialEl = nav.querySelector('.nav-social');
-  const navToolsEl = nav.querySelector('.nav-tools');
-  const drawerPanel = document.createElement('div');
-  drawerPanel.className = 'nav-drawer-panel';
-  if (navSectionsEl) drawerPanel.append(navSectionsEl);
-  if (navSocialEl) drawerPanel.append(navSocialEl);
-  nav.insertBefore(drawerPanel, navToolsEl);
+  if (navSocialEl) {
+    const drawerPanel = document.createElement('div');
+    drawerPanel.className = 'nav-drawer-panel';
+    navSocialEl.replaceWith(drawerPanel);
+    drawerPanel.append(navSocialEl);
+  }
 
   // social icons are served from DAM rather than the code bundle
   navSocialEl?.querySelectorAll('.icon img[data-icon-name]').forEach((img) => {
