@@ -10,18 +10,6 @@ export default function decorate(block) {
   const track = document.createElement('div');
   track.className = 'carousel-track';
 
-  // size the track to fit the tallest slide's natural proportions — a single
-  // standard height avoids the track resizing (and the page jumping) on every
-  // transition. Shorter slides are shown in full and centered, not cropped.
-  function syncHeight() {
-    let maxRatio = 0;
-    track.querySelectorAll('img').forEach((img) => {
-      if (img.naturalWidth) maxRatio = Math.max(maxRatio, img.naturalHeight / img.naturalWidth);
-    });
-    if (maxRatio) track.style.height = `${track.offsetWidth * maxRatio}px`;
-  }
-  window.addEventListener('resize', syncHeight);
-
   const indicators = document.createElement('div');
   indicators.className = 'carousel-indicators';
 
@@ -44,9 +32,6 @@ export default function decorate(block) {
         slide.append(wrapper);
       }
       wrapper.append(optimizedPic);
-      const newImg = optimizedPic.querySelector('img');
-      if (newImg.complete) syncHeight();
-      else newImg.addEventListener('load', syncHeight);
     }
 
     track.append(slide);
@@ -97,7 +82,6 @@ export default function decorate(block) {
 
   block.textContent = '';
   block.append(track, indicators);
-  syncHeight();
   if (slides.length > 1) {
     block.append(prevButton, nextButton);
     block.addEventListener('mouseenter', stopAutoplay);

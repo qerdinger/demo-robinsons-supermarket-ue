@@ -11,15 +11,14 @@ main > .section:has(.carousel) > div {
 }
 
 .carousel-track {
-  position: relative;
+  display: grid;
   width: 100%;
-
-  /* height is set inline by carousel.js to match the active slide's natural image size */
 }
 
+/* stacking every slide in the same grid cell makes the grid track — and so the
+   carousel's height — auto-size to the tallest slide, with no JS measurement */
 .carousel-slide {
-  position: absolute;
-  inset: 0;
+  grid-area: 1 / 1;
   display: flex;
   align-items: center;
   justify-content: center;
