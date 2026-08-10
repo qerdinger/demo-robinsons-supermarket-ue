@@ -58,7 +58,8 @@
         "carousel",
         "promotions",
         "store-locator",
-        "banner"
+        "banner",
+        "contact-card"
       ]
     }
   ]

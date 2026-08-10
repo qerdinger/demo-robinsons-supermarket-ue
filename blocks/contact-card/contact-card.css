@@ -1,0 +1,67 @@
+.contact-card-inner {
+  border: 1px solid #dadada;
+  border-radius: 8px;
+  padding: 24px;
+  background-color: var(--background-color);
+}
+
+.contact-card-icon {
+  width: 32px;
+  height: 32px;
+  margin-bottom: 12px;
+  background-image: url('/content/dam/robinsonssupermarket/icons/misc/email-icon.webp');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+
+.contact-card-heading {
+  margin: 0 0 8px;
+  font-family: var(--heading-font-family);
+  font-size: var(--heading-font-size-xs);
+  font-weight: 700;
+}
+
+.contact-card-description {
+  margin: 0 0 16px;
+  color: var(--dark-color);
+}
+
+.contact-card-cta:any-link {
+  display: inline-flex;
+  align-items: center;
+  border: 0;
+  border-radius: 2.4em;
+  padding: 0.5em 1.2em;
+  background-color: #78be20;
+  color: var(--background-color);
+  text-decoration: none;
+}
+
+.contact-card-cta:hover,
+.contact-card-cta:focus-visible {
+  background-color: #63a01a;
+}
+
+.contact-card-cta::after {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-left: 8px;
+  border: 2px solid currentcolor;
+  border-width: 2px 2px 0 0;
+  transform: rotate(45deg);
+}
+
+/* lays the section out as info (left) + card (right): decorateSections groups the plain
+   text/title content into one .default-content-wrapper and the block into its own
+   .contact-card-wrapper, so the section itself (not its child divs) is the grid container */
+@media (width >= 900px) {
+  main .section.contact-card-container {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    align-items: start;
+    gap: 40px;
+  }
+}
