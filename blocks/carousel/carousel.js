@@ -15,10 +15,11 @@ export default function decorate(block) {
   indicators.className = 'carousel-indicators';
 
   slides.forEach((row, i) => {
-    const [imageDiv, altDiv, linkDiv] = row.children;
+    // note: the model's imageAlt field is merged by AEM into <img alt>, not rendered as its own div
+    const [imageDiv, linkDiv] = row.children;
     const picture = imageDiv?.querySelector('picture');
-    const altText = altDiv?.textContent.trim();
-    const href = linkDiv?.textContent.trim();
+    const link = linkDiv?.querySelector('a');
+    const href = link ? link.href : linkDiv?.textContent.trim();
 
     const slide = document.createElement('div');
     slide.className = 'carousel-slide';
@@ -27,7 +28,7 @@ export default function decorate(block) {
 
     if (picture) {
       const img = picture.querySelector('img');
-      const optimizedPic = createOptimizedPicture(img.src, altText || img.alt, i === 0, [{ width: '1600' }]);
+      const optimizedPic = createOptimizedPicture(img.src, img.alt, i === 0, [{ width: '1600' }]);
       moveInstrumentation(img, optimizedPic.querySelector('img'));
       const wrapper = href ? document.createElement('a') : slide;
       if (href) {

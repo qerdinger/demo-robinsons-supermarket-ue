@@ -9,12 +9,13 @@ export default function decorate(block) {
   const ul = document.createElement('ul');
 
   [...block.children].forEach((row) => {
-    const [imageDiv, altDiv, titleDiv, descriptionDiv, linkDiv] = row.children;
+    // note: the model's imageAlt field is merged by AEM into <img alt>, not rendered as its own div
+    const [imageDiv, titleDiv, descriptionDiv, linkDiv] = row.children;
     const picture = imageDiv?.querySelector('picture');
-    const altText = altDiv?.textContent.trim();
     const title = titleDiv?.textContent.trim();
     const description = descriptionDiv?.textContent.trim();
-    const href = linkDiv?.textContent.trim();
+    const link = linkDiv?.querySelector('a');
+    const href = link ? link.href : linkDiv?.textContent.trim();
 
     const li = document.createElement('li');
     li.className = 'promotions-card';
@@ -28,7 +29,7 @@ export default function decorate(block) {
       const imageWrapper = document.createElement('div');
       imageWrapper.className = 'promotions-card-image';
       const img = picture.querySelector('img');
-      const optimizedPic = createOptimizedPicture(img.src, altText || img.alt, false, [{ width: '750' }]);
+      const optimizedPic = createOptimizedPicture(img.src, img.alt, false, [{ width: '750' }]);
       moveInstrumentation(img, optimizedPic.querySelector('img'));
       imageWrapper.append(optimizedPic);
       container.append(imageWrapper);
