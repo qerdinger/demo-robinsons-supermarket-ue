@@ -14,7 +14,19 @@ export default async function decorate(block) {
   // decorate footer DOM
   block.textContent = '';
   const footer = document.createElement('div');
+  footer.className = 'footer-content';
   while (fragment.firstElementChild) footer.append(fragment.firstElementChild);
+
+  const classes = ['logo', 'about', 'nav-1', 'nav-2', 'social', 'copyright'];
+  classes.forEach((c, i) => {
+    const section = footer.children[i];
+    if (section) section.classList.add(`footer-${c}`);
+  });
+
+  // social icons are served from DAM rather than the code bundle
+  footer.querySelectorAll('.footer-social .icon img[data-icon-name]').forEach((img) => {
+    img.src = `/content/dam/robinsonssupermarket/icons/${img.dataset.iconName}.svg`;
+  });
 
   block.append(footer);
 }
