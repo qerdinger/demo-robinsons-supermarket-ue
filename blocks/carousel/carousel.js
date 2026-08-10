@@ -10,6 +10,16 @@ export default function decorate(block) {
   const track = document.createElement('div');
   track.className = 'carousel-track';
 
+  // size the track to the active slide's natural image proportions, so a taller
+  // image is shown in full rather than being cropped to a fixed aspect ratio
+  function syncHeight() {
+    const img = track.querySelector('.carousel-slide.active img');
+    if (img && img.naturalWidth) {
+      track.style.height = `${(track.offsetWidth * img.naturalHeight) / img.naturalWidth}px`;
+    }
+  }
+  window.addEventListener('resize', syncHeight);
+
   const indicators = document.createElement('div');
   indicators.className = 'carousel-indicators';
 
@@ -32,6 +42,9 @@ export default function decorate(block) {
         slide.append(wrapper);
       }
       wrapper.append(optimizedPic);
+      const newImg = optimizedPic.querySelector('img');
+      if (newImg.complete) syncHeight();
+      else newImg.addEventListener('load', () => { if (slide.classList.contains('active')) syncHeight(); });
     }
 
     track.append(slide);
@@ -63,6 +76,7 @@ export default function decorate(block) {
     current = ((index % total) + total) % total;
     [...track.children].forEach((slide, i) => slide.classList.toggle('active', i === current));
     [...indicators.children].forEach((dot, i) => dot.classList.toggle('active', i === current));
+    syncHeight();
   }
 
   function stopAutoplay() {
@@ -82,6 +96,7 @@ export default function decorate(block) {
 
   block.textContent = '';
   block.append(track, indicators);
+  syncHeight();
   if (slides.length > 1) {
     block.append(prevButton, nextButton);
     block.addEventListener('mouseenter', stopAutoplay);

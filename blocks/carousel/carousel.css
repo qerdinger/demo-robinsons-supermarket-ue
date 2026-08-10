@@ -13,7 +13,8 @@ main > .section:has(.carousel) > div {
 .carousel-track {
   position: relative;
   width: 100%;
-  aspect-ratio: 4 / 3;
+
+  /* height is set inline by carousel.js to match the active slide's natural image size */
 }
 
 .carousel-slide {
@@ -34,13 +35,12 @@ main > .section:has(.carousel) > div {
 .carousel-slide picture {
   display: block;
   width: 100%;
-  height: 100%;
 }
 
 .carousel-slide img {
+  display: block;
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  height: auto;
 }
 
 .carousel-indicators {
@@ -109,12 +109,6 @@ main > .section:has(.carousel) > div {
 .carousel-control-next .carousel-arrow-icon {
   margin-right: 4px;
   transform: rotate(45deg);
-}
-
-@media (width >= 600px) {
-  .carousel-track {
-    aspect-ratio: 16 / 6;
-  }
 }
 
 @media (width >= 900px) {
