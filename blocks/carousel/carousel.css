@@ -1,3 +1,9 @@
+/* let the carousel span the full screen width, breaking out of the section's max-width container */
+main > .section:has(.carousel) > div {
+  max-width: none;
+  padding: 0;
+}
+
 .carousel {
   position: relative;
   overflow: hidden;
