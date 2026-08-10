@@ -323,20 +323,61 @@ header nav[aria-expanded='true'] .nav-social {
   width: 100%;
 }
 
-/* "Partner with Us" reads as a pill link rather than a plain nav item */
-header nav .nav-social .default-content-wrapper > p:first-child a:any-link {
+/* the drawer's own nav list (links + Talk To Us dropdown), separate from the bar's */
+header nav .nav-social .default-content-wrapper > ul:first-of-type {
+  display: block;
+  list-style: none;
+  padding-left: 0;
+  font-size: var(--body-font-size-s);
+  margin: 0 0 20px;
+}
+
+header nav .nav-social .default-content-wrapper > ul:first-of-type > li {
+  font-weight: 500;
+}
+
+header nav .nav-social .default-content-wrapper > ul:first-of-type > li > ul > li {
+  font-weight: 400;
+}
+
+/* Talk To Us dropdown chevron + inline expand, mirroring the bar's own nav-drop */
+header nav .nav-social .nav-drop {
+  position: relative;
+  padding-right: 16px;
+  cursor: pointer;
+}
+
+header nav .nav-social .nav-drop::after {
+  content: '';
   display: inline-block;
-  padding: 4px 16px;
-  border: 1px solid currentcolor;
-  border-radius: 999px;
-  font-weight: 600;
+  position: absolute;
+  top: 0.5em;
+  right: 2px;
+  transform: rotate(135deg);
+  width: 6px;
+  height: 6px;
+  border: 2px solid currentcolor;
+  border-radius: 0 1px 0 0;
+  border-width: 2px 2px 0 0;
+}
+
+header nav .nav-social .nav-drop[aria-expanded='true']::after {
+  top: unset;
+  bottom: 0.5em;
+  transform: rotate(315deg);
+}
+
+header nav .nav-social .default-content-wrapper > ul:first-of-type > li > ul {
+  display: none;
+  margin-top: 0;
+  padding: 8px 0 0 16px;
+}
+
+header nav .nav-social .default-content-wrapper > ul:first-of-type > li[aria-expanded='true'] > ul {
+  display: block;
 }
 
 header nav .nav-social .default-content-wrapper > p:nth-child(2) {
-  margin-bottom: 12px;
-}
-
-header nav .nav-social .default-content-wrapper > p:nth-child(3) {
   font-size: var(--body-font-size-s);
   margin-bottom: 12px;
 }

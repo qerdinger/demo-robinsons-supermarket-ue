@@ -155,16 +155,20 @@ export default async function decorate(block) {
   }
 
   const navSections = nav.querySelector('.nav-sections');
-  if (navSections) {
-    navSections.querySelectorAll(':scope .default-content-wrapper > ul > li').forEach((navSection) => {
+  // the drawer's own nav list (first list in nav-social, ahead of the social icon list)
+  // gets the same dropdown behavior as the bar's nav-sections list
+  const navSocialLinks = navSocialEl?.querySelector(':scope .default-content-wrapper > ul');
+  [navSections, navSocialLinks].forEach((list) => {
+    if (!list) return;
+    list.querySelectorAll(':scope .default-content-wrapper > ul > li, :scope > li').forEach((navSection) => {
       if (navSection.querySelector('ul')) navSection.classList.add('nav-drop');
       navSection.addEventListener('click', () => {
         const expanded = navSection.getAttribute('aria-expanded') === 'true';
-        toggleAllNavSections(navSections);
+        toggleAllNavSections(list);
         navSection.setAttribute('aria-expanded', expanded ? 'false' : 'true');
       });
     });
-  }
+  });
 
   // hamburger for mobile
   const hamburger = document.createElement('div');
