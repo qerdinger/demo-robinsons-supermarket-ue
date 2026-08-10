@@ -58,15 +58,14 @@
    text/title content into one .default-content-wrapper and the block into its own
    .contact-card-wrapper, so the section itself (not its child divs) is the grid container.
    The usual main > .section > div max-width/padding centering is moved up onto the section
-   itself so both columns sit inside one evenly centered 1200px container. */
+   itself (and dropped, rather than capped at 1200px, to make the section screen-width) so
+   both columns sit inside one evenly padded full-width container. */
 @media (width >= 900px) {
   main .section.contact-card-container {
     display: grid;
     grid-template-columns: 2fr 1fr;
     align-items: start;
     gap: 40px;
-    max-width: 1200px;
-    margin: 0 auto;
     padding: 0 24px;
   }
 
