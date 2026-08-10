@@ -323,3 +323,32 @@ main .section.highlight {
   margin: 0;
   padding: 40px 0;
 }
+
+/* CTA Accent: brand-green button with a trailing arrow, for sections with a single primary CTA */
+main .section.cta-accent .button-wrapper {
+  margin-top: 24px;
+  text-align: center;
+}
+
+main .section.cta-accent .button-wrapper .button {
+  border-color: #78be20;
+  background-color: #78be20;
+  color: var(--background-color);
+}
+
+main .section.cta-accent .button-wrapper .button::after {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-left: 8px;
+  border: 2px solid currentcolor;
+  border-width: 2px 2px 0 0;
+  transform: rotate(45deg);
+}
+
+main .section.cta-accent .button-wrapper .button:hover,
+main .section.cta-accent .button-wrapper .button:focus-visible {
+  border-color: #63a01a;
+  background-color: #63a01a;
+}
