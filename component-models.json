@@ -146,6 +146,47 @@
     ]
   },
   {
+    "id": "banner",
+    "fields": [
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "image",
+        "label": "Image",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "imageAlt",
+        "label": "Alt Text"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "linkHref",
+        "label": "Link URL"
+      },
+      {
+        "component": "select",
+        "valueType": "string",
+        "name": "padding",
+        "label": "Padding",
+        "value": "with-padding",
+        "options": [
+          {
+            "name": "With Padding",
+            "value": "with-padding"
+          },
+          {
+            "name": "Without Padding",
+            "value": "without-padding"
+          }
+        ]
+      }
+    ]
+  },
+  {
     "id": "card",
     "fields": [
       {

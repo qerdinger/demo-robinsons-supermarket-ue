@@ -1,0 +1,17 @@
+.banner {
+  display: block;
+  line-height: 0;
+}
+
+.banner picture,
+.banner img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* breaks the banner out of the section's max-width container, edge to edge */
+main .section:has(.banner.no-padding) > div {
+  max-width: none;
+  padding: 0;
+}
