@@ -330,6 +330,11 @@ main .section.cta-accent .button-wrapper {
   text-align: center;
 }
 
+main .section.cta-accent p:has(picture) {
+  margin-top: 24px;
+  text-align: center;
+}
+
 main .section.cta-accent .button-wrapper .button {
   border-color: #78be20;
   background-color: #78be20;
