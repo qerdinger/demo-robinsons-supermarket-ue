@@ -1,0 +1,74 @@
+.promotions > ul {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.promotions-card {
+  border: 1px solid #dadada;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: var(--background-color);
+}
+
+.promotions-card-link {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+
+.promotions-card-image {
+  line-height: 0;
+}
+
+.promotions-card img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+.promotions-card-body {
+  padding: 16px;
+}
+
+.promotions-card-title {
+  margin: 0 0 4px;
+  font-family: var(--heading-font-family);
+  font-size: var(--heading-font-size-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.promotions-card-description {
+  margin: 0;
+  color: var(--dark-color);
+  font-size: var(--body-font-size-xs);
+}
+
+/* the button below the promotions grid is centered and uses the brand green,
+   scoped to sections that contain a promotions block so other CTAs are unaffected */
+main .section:has(.promotions) .button-wrapper {
+  margin-top: 12px;
+  text-align: center;
+}
+
+main .section:has(.promotions) .button-wrapper .button {
+  border-color: #78be20;
+  background-color: #78be20;
+  color: var(--background-color);
+}
+
+main .section:has(.promotions) .button-wrapper .button:hover,
+main .section:has(.promotions) .button-wrapper .button:focus-visible {
+  border-color: #63a01a;
+  background-color: #63a01a;
+}
+
+@media (width >= 600px) {
+  .promotions > ul {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "definitions": [
+    {
+      "title": "Promotions",
+      "id": "promotions",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block",
+            "template": {
+              "name": "Promotions",
+              "filter": "promotions"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Promotion Item",
+      "id": "promotion-item",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block/item",
+            "template": {
+              "name": "Promotion Item",
+              "model": "promotion-item"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "promotion-item",
+      "fields": [
+        {
+          "component": "reference",
+          "valueType": "string",
+          "name": "image",
+          "label": "Image",
+          "multi": false
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "imageAlt",
+          "label": "Alt Text"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "title",
+          "label": "Title"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "description",
+          "label": "Description"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "linkHref",
+          "label": "Link URL"
+        }
+      ]
+    }
+  ],
+  "filters": [
+    {
+      "id": "promotions",
+      "components": [
+        "promotion-item"
+      ]
+    }
+  ]
+}

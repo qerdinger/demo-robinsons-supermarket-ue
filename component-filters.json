@@ -16,7 +16,8 @@
       "cards",
       "columns",
       "fragment",
-      "carousel"
+      "carousel",
+      "promotions"
     ]
   },
   {
@@ -44,6 +45,12 @@
       "image",
       "button",
       "title"
+    ]
+  },
+  {
+    "id": "promotions",
+    "components": [
+      "promotion-item"
     ]
   }
 ]
