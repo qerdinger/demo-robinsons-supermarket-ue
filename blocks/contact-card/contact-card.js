@@ -5,12 +5,14 @@ import { moveInstrumentation } from '../../scripts/scripts.js';
  * @param {Element} block The contact card block element
  */
 export default function decorate(block) {
-  const [headingDiv, descriptionDiv, linkTextDiv, linkDiv] = block.children;
+  // AEM merges the paired linkText + link fields into a single <a> in one div
+  // (the same convention the button component uses), rather than two separate divs
+  const [headingDiv, descriptionDiv, linkDiv] = block.children;
   const heading = headingDiv?.textContent.trim();
   const description = descriptionDiv?.textContent.trim();
-  const linkText = linkTextDiv?.textContent.trim();
   const link = linkDiv?.querySelector('a');
-  const href = link ? link.href : linkDiv?.textContent.trim();
+  const href = link?.href;
+  const linkText = link?.textContent.trim();
 
   const card = document.createElement('div');
   card.className = 'contact-card-inner';
