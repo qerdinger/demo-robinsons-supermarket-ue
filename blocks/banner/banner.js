@@ -6,9 +6,9 @@ import { moveInstrumentation } from '../../scripts/scripts.js';
  * @param {Element} block The banner block element
  */
 export default function decorate(block) {
-  const [row] = block.children;
-  // note: the model's imageAlt field is merged by AEM into <img alt>, not rendered as its own div
-  const [imageDiv, linkDiv, paddingDiv] = row.children;
+  // a plain (non-repeating) block has one top-level div per field, not a wrapping row;
+  // the model's imageAlt field is merged by AEM into <img alt>, not rendered as its own div
+  const [imageDiv, linkDiv, paddingDiv] = block.children;
   const picture = imageDiv?.querySelector('picture');
   const link = linkDiv?.querySelector('a');
   const href = link ? link.href : linkDiv?.textContent.trim();
@@ -24,7 +24,7 @@ export default function decorate(block) {
 
   const container = href ? document.createElement('a') : document.createElement('div');
   if (href) container.href = href;
-  moveInstrumentation(row, container);
+  moveInstrumentation(imageDiv, container);
   container.append(optimizedPic);
 
   block.replaceChildren(container);
