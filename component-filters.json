@@ -17,7 +17,8 @@
       "columns",
       "fragment",
       "carousel",
-      "promotions"
+      "promotions",
+      "store-locator"
     ]
   },
   {
@@ -51,6 +52,12 @@
     "id": "promotions",
     "components": [
       "promotion-item"
+    ]
+  },
+  {
+    "id": "store-locator",
+    "components": [
+      "store-item"
     ]
   }
 ]

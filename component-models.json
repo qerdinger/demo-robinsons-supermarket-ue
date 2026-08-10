@@ -274,5 +274,34 @@
         "label": "Link URL"
       }
     ]
+  },
+  {
+    "id": "store-item",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "storeName",
+        "label": "Store Name"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "address",
+        "label": "Address"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "hours",
+        "label": "Store Hours"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "phone",
+        "label": "Tel No."
+      }
+    ]
   }
 ]

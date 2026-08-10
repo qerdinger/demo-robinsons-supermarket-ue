@@ -52,7 +52,8 @@
         "columns",
         "fragment",
         "carousel",
-        "promotions"
+        "promotions",
+        "store-locator"
       ]
     }
   ]
