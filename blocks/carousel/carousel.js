@@ -1,4 +1,5 @@
 import { createOptimizedPicture } from '../../scripts/aem.js';
+import { moveInstrumentation } from '../../scripts/scripts.js';
 
 /**
  * loads and decorates the carousel
@@ -22,10 +23,12 @@ export default function decorate(block) {
     const slide = document.createElement('div');
     slide.className = 'carousel-slide';
     if (i === 0) slide.classList.add('active');
+    moveInstrumentation(row, slide);
 
     if (picture) {
       const img = picture.querySelector('img');
       const optimizedPic = createOptimizedPicture(img.src, altText || img.alt, i === 0, [{ width: '1600' }]);
+      moveInstrumentation(img, optimizedPic.querySelector('img'));
       const wrapper = href ? document.createElement('a') : slide;
       if (href) {
         wrapper.href = href;
