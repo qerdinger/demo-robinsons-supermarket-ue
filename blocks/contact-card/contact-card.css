@@ -65,3 +65,14 @@
     gap: 40px;
   }
 }
+
+/* AEM strips inline style attributes from Text component content, so the "Contact Us" /
+   "Corporate Address" sub-headings (the 2nd and 4th paragraph in this section's default
+   content) are styled positionally instead */
+main .section.contact-card-container .default-content-wrapper p:nth-of-type(2),
+main .section.contact-card-container .default-content-wrapper p:nth-of-type(4) {
+  margin-top: 16px;
+  color: #63727e;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
