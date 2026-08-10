@@ -25,7 +25,7 @@ export default async function decorate(block) {
 
   // social icons are served from DAM rather than the code bundle
   footer.querySelectorAll('.footer-social .icon img[data-icon-name]').forEach((img) => {
-    img.src = `/content/dam/robinsonssupermarket/icons/${img.dataset.iconName}.svg`;
+    img.src = `/content/dam/robinsonssupermarket/icons/coloured/${img.dataset.iconName}.svg`;
   });
 
   block.append(footer);
