@@ -1,6 +1,8 @@
 import { createOptimizedPicture } from '../../scripts/aem.js';
 
-const AEM_HOST = 'https://publish-p151412-e1619656.adobeaemcloud.com';
+// the author host requires the access token below; same-origin (no CORS needed) when this
+// page is viewed inside Universal Editor's canvas, which also loads from this host
+const AEM_HOST = 'https://author-p151412-e1619656.adobeaemcloud.com';
 
 function trimBlurb(text, maxLength = 160) {
   const trimmed = text.trim();
