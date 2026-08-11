@@ -1,7 +1,3 @@
-// the author host requires the access token below; same-origin (no CORS needed) when this
-// page is viewed inside Universal Editor's canvas, which also loads from this host
-const AEM_HOST = 'https://author-p151412-e1619656.adobeaemcloud.com';
-
 function trimBlurb(text, maxLength = 160) {
   const trimmed = text.trim();
   return trimmed.length > maxLength ? `${trimmed.slice(0, maxLength - 1).trimEnd()}…` : trimmed;
@@ -22,7 +18,7 @@ async function fetchAuthenticatedImageUrl(url, headers) {
   }
 }
 
-async function renderCard(item, headers) {
+async function renderCard(item, headers, aemHost) {
   const li = document.createElement('li');
   li.className = 'promotions-card';
 
@@ -33,7 +29,7 @@ async function renderCard(item, headers) {
   // eslint-disable-next-line no-underscore-dangle
   const imagePath = item.featuredImage?._dynamicUrl || item.featuredImage?._path;
   if (imagePath) {
-    const imageUrl = imagePath.startsWith('/') ? `${AEM_HOST}${imagePath}` : imagePath;
+    const imageUrl = imagePath.startsWith('/') ? `${aemHost}${imagePath}` : imagePath;
     const blobUrl = await fetchAuthenticatedImageUrl(imageUrl, headers);
     if (blobUrl) {
       const imageWrapper = document.createElement('div');
@@ -72,7 +68,8 @@ async function renderCard(item, headers) {
  * @param {Element} block The promotions-cf block element
  */
 export default async function decorate(block) {
-  const [queryPathDiv, accessTokenDiv] = block.children;
+  const [aemHostDiv, queryPathDiv, accessTokenDiv] = block.children;
+  const aemHost = aemHostDiv?.textContent.trim();
   const queryPath = queryPathDiv?.textContent.trim();
   const accessToken = accessTokenDiv?.textContent.trim();
 
@@ -80,13 +77,13 @@ export default async function decorate(block) {
   const ul = document.createElement('ul');
   block.replaceChildren(ul);
 
-  if (!queryPath) return;
+  if (!aemHost || !queryPath) return;
 
   const headers = accessToken ? { Authorization: `Bearer ${accessToken}` } : {};
 
   let items = [];
   try {
-    const res = await fetch(`${AEM_HOST}/graphql/execute.json/${queryPath}`, { headers });
+    const res = await fetch(`${aemHost}/graphql/execute.json/${queryPath}`, { headers });
     if (!res.ok) throw new Error(`GraphQL request failed: ${res.status}`);
     const json = await res.json();
     if (json.errors) throw new Error(`GraphQL errors: ${JSON.stringify(json.errors)}`);
@@ -97,6 +94,6 @@ export default async function decorate(block) {
     return;
   }
 
-  const cards = await Promise.all(items.map((item) => renderCard(item, headers)));
+  const cards = await Promise.all(items.map((item) => renderCard(item, headers, aemHost)));
   cards.forEach((li) => ul.append(li));
 }
