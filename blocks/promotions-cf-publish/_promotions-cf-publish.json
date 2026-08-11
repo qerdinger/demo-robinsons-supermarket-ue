@@ -33,6 +33,12 @@
           "name": "graphqlQueryPath",
           "label": "GraphQL Persisted Query Path",
           "value": "Robinson/promotions-list"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "wrapperUrl",
+          "label": "Publish Proxy Wrapper URL (optional)"
         }
       ]
     }
