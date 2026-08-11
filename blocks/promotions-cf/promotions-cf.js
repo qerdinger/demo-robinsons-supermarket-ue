@@ -68,12 +68,14 @@ async function renderCard(item, headers, aemHost) {
  * @param {Element} block The promotions-cf block element
  */
 export default async function decorate(block) {
-  const [aemHostDiv, queryPathDiv, accessTokenDiv] = block.children;
+  const [aemHostDiv, queryPathDiv, accessTokenDiv, styleDiv] = block.children;
   const aemHost = aemHostDiv?.textContent.trim();
   const queryPath = queryPathDiv?.textContent.trim();
   const accessToken = accessTokenDiv?.textContent.trim();
+  const style = styleDiv?.textContent.trim();
 
   block.classList.add('promotions');
+  if (style && style !== 'default') block.classList.add(`style-${style}`);
   const ul = document.createElement('ul');
   block.replaceChildren(ul);
 

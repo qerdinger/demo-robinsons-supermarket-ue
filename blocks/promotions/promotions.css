@@ -72,3 +72,61 @@ main .section:has(.promotions) .button-wrapper .button:focus-visible {
     grid-template-columns: repeat(3, 1fr);
   }
 }
+
+/* Style System variants (promotions-cf's "Style System" field): each reorders/hides the same
+   image + title + description markup rather than changing what gets rendered, so styling stays
+   purely CSS-driven regardless of which layout an author picks. */
+.promotions.style-image-bottom .promotions-card-link {
+  display: flex;
+  flex-direction: column;
+}
+
+.promotions.style-image-bottom .promotions-card-image {
+  order: 2;
+}
+
+.promotions.style-image-bottom .promotions-card-body {
+  order: 1;
+}
+
+.promotions.style-image-background .promotions-card {
+  position: relative;
+}
+
+.promotions.style-image-background .promotions-card-link {
+  display: flex;
+  min-height: 280px;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.promotions.style-image-background .promotions-card-image {
+  position: absolute;
+  inset: 0;
+  line-height: 0;
+}
+
+.promotions.style-image-background .promotions-card-image img {
+  height: 100%;
+}
+
+.promotions.style-image-background .promotions-card-body {
+  position: relative;
+  z-index: 1;
+  padding: 16px;
+  background: linear-gradient(to top, rgb(0 0 0 / 70%), transparent 65%);
+}
+
+.promotions.style-image-background .promotions-card-title,
+.promotions.style-image-background .promotions-card-description {
+  color: var(--background-color);
+}
+
+.promotions.style-title-only .promotions-card-image,
+.promotions.style-title-only .promotions-card-description {
+  display: none;
+}
+
+.promotions.style-text-only .promotions-card-image {
+  display: none;
+}
