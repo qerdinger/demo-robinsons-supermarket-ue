@@ -1,0 +1,3 @@
+/* card grid styling is fully reused from blocks/promotions/promotions.css:
+   decorate() adds the "promotions" class to this block so the same
+   .promotions > ul / .promotions-card rules apply here too */

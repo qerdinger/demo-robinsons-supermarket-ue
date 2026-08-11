@@ -314,6 +314,18 @@
     ]
   },
   {
+    "id": "promotions-cf",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "graphqlQueryPath",
+        "label": "GraphQL Persisted Query Path",
+        "value": "Robinson/promotions-list"
+      }
+    ]
+  },
+  {
     "id": "promotion-item",
     "fields": [
       {
