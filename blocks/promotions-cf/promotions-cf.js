@@ -1,7 +1,8 @@
 import { createOptimizedPicture } from '../../scripts/aem.js';
 
-// the persisted GraphQL query is public on the delivery/publish tier, not the author host
-const AEM_HOST = 'https://publish-p151412-e1619656.adobeaemcloud.com';
+// the author host requires the access token below; same-origin (no CORS needed) when this
+// page is viewed inside Universal Editor's canvas, which also loads from this host
+const AEM_HOST = 'https://author-p151412-e1619656.adobeaemcloud.com';
 
 function trimBlurb(text, maxLength = 160) {
   const trimmed = text.trim();
@@ -52,8 +53,9 @@ function renderCard(item) {
  * @param {Element} block The promotions-cf block element
  */
 export default async function decorate(block) {
-  const [queryPathDiv] = block.children;
+  const [queryPathDiv, accessTokenDiv] = block.children;
   const queryPath = queryPathDiv?.textContent.trim();
+  const accessToken = accessTokenDiv?.textContent.trim();
 
   block.classList.add('promotions');
   const ul = document.createElement('ul');
@@ -61,9 +63,11 @@ export default async function decorate(block) {
 
   if (!queryPath) return;
 
+  const headers = accessToken ? { Authorization: `Bearer ${accessToken}` } : {};
+
   let items = [];
   try {
-    const res = await fetch(`${AEM_HOST}/graphql/execute.json/${queryPath}`);
+    const res = await fetch(`${AEM_HOST}/graphql/execute.json/${queryPath}`, { headers });
     if (!res.ok) throw new Error(`GraphQL request failed: ${res.status}`);
     const json = await res.json();
     if (json.errors) throw new Error(`GraphQL errors: ${JSON.stringify(json.errors)}`);
