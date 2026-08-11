@@ -314,31 +314,6 @@
     ]
   },
   {
-    "id": "promotions-cf-publish",
-    "fields": [
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "aemHost",
-        "label": "AEM Host",
-        "value": "https://publish-p151412-e1619656.adobeaemcloud.com"
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "graphqlQueryPath",
-        "label": "GraphQL Persisted Query Path",
-        "value": "Robinson/promotions-list"
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "wrapperUrl",
-        "label": "Publish Proxy Wrapper URL (optional)"
-      }
-    ]
-  },
-  {
     "id": "promotions-cf",
     "fields": [
       {
