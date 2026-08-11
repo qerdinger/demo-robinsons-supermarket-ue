@@ -1,5 +1,3 @@
-import { createOptimizedPicture } from '../../scripts/aem.js';
-
 // the author host requires the access token below; same-origin (no CORS needed) when this
 // page is viewed inside Universal Editor's canvas, which also loads from this host
 const AEM_HOST = 'https://author-p151412-e1619656.adobeaemcloud.com';
@@ -9,7 +7,22 @@ function trimBlurb(text, maxLength = 160) {
   return trimmed.length > maxLength ? `${trimmed.slice(0, maxLength - 1).trimEnd()}…` : trimmed;
 }
 
-function renderCard(item) {
+// plain <img> tags can't carry the Authorization header, so once the page is published
+// (viewed without an authenticated author session cookie) a direct <img src> to the author
+// host 401s; fetching the binary with the same header and pointing <img> at a blob URL works
+// in both cases
+async function fetchAuthenticatedImageUrl(url, headers) {
+  try {
+    const res = await fetch(url, { headers });
+    if (!res.ok) return null;
+    const blob = await res.blob();
+    return URL.createObjectURL(blob);
+  } catch {
+    return null;
+  }
+}
+
+async function renderCard(item, headers) {
   const li = document.createElement('li');
   li.className = 'promotions-card';
 
@@ -20,12 +33,18 @@ function renderCard(item) {
   // eslint-disable-next-line no-underscore-dangle
   const imagePath = item.featuredImage?._dynamicUrl || item.featuredImage?._path;
   if (imagePath) {
-    const imageWrapper = document.createElement('div');
-    imageWrapper.className = 'promotions-card-image';
     const imageUrl = imagePath.startsWith('/') ? `${AEM_HOST}${imagePath}` : imagePath;
-    const optimizedPic = createOptimizedPicture(imageUrl, item.title || '', false, [{ width: '750' }]);
-    imageWrapper.append(optimizedPic);
-    link.append(imageWrapper);
+    const blobUrl = await fetchAuthenticatedImageUrl(imageUrl, headers);
+    if (blobUrl) {
+      const imageWrapper = document.createElement('div');
+      imageWrapper.className = 'promotions-card-image';
+      const img = document.createElement('img');
+      img.src = blobUrl;
+      img.alt = item.title || '';
+      img.loading = 'lazy';
+      imageWrapper.append(img);
+      link.append(imageWrapper);
+    }
   }
 
   const body = document.createElement('div');
@@ -78,5 +97,6 @@ export default async function decorate(block) {
     return;
   }
 
-  items.forEach((item) => ul.append(renderCard(item)));
+  const cards = await Promise.all(items.map((item) => renderCard(item, headers)));
+  cards.forEach((li) => ul.append(li));
 }
