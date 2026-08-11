@@ -64,9 +64,13 @@ export default async function decorate(block) {
   let items = [];
   try {
     const res = await fetch(`${AEM_HOST}/graphql/execute.json/${queryPath}`);
+    if (!res.ok) throw new Error(`GraphQL request failed: ${res.status}`);
     const json = await res.json();
+    if (json.errors) throw new Error(`GraphQL errors: ${JSON.stringify(json.errors)}`);
     items = Object.values(json?.data || {})[0]?.items || [];
-  } catch {
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('promotions-cf: failed to load GraphQL data', error);
     return;
   }
 
