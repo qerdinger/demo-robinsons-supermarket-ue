@@ -1,6 +1,7 @@
 import { getMetadata } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
-import getGraphqlHost, { isAuthorEnvironment } from '../../scripts/graphql-host.js';
+import { isAuthorEnvironment } from '../../scripts/graphql-host.js';
+import getSocialIconUrl from '../../scripts/social-icons.js';
 
 // the site root resolves on both tiers, but only the author host needs the JCR path prefix —
 // the published site serves the homepage at a plain "/"
@@ -147,23 +148,11 @@ export default async function decorate(block) {
     drawerPanel.append(navSocialEl);
   }
 
-  // social icons are served from DAM (/content/dam/robinsonssupermarket/social_icons) rather
-  // than the code bundle. A plain /content/dam/... path only resolves on the AEM host itself —
-  // the published site is a different origin that doesn't proxy DAM paths at all, and even on
-  // the AEM host a raw DAM path 404s on the publish tier (assets there are only served through
-  // dynamic media) — so each icon is addressed by its dynamic-media delivery UUID instead.
-  const SOCIAL_ICON_DM_AID = {
-    facebook: '3dba81d8-cea0-4c56-aba3-258f296e5d72',
-    viber: '9fabc4a5-0642-4479-b649-fd5ed69d640e',
-    twitter: '6ed1570e-f729-47f0-95ee-38767cc5e19d',
-    youtube: 'b8ae7e1c-b4ca-4be8-9830-d1947b870d87',
-    tiktok: '7596cf7f-6b54-4b02-908d-a3ca34c09b21',
-    instagram: '8cc2cb57-b37c-4007-9cc1-9b1f9067e026',
-  };
+  // social icons are served from DAM rather than the code bundle (see scripts/social-icons.js
+  // for why this needs an absolute dynamic-media URL rather than a plain DAM path)
   navSocialEl?.querySelectorAll('.icon img[data-icon-name]').forEach((img) => {
-    const dmAid = SOCIAL_ICON_DM_AID[img.dataset.iconName];
-    if (!dmAid) return;
-    img.src = `${getGraphqlHost()}/adobe/dynamicmedia/deliver/dm-aid--${dmAid}/${img.dataset.iconName}.svg`;
+    const url = getSocialIconUrl(img.dataset.iconName);
+    if (url) img.src = url;
   });
 
   const navBrand = nav.querySelector('.nav-brand');

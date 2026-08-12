@@ -1,5 +1,6 @@
 import { getMetadata } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
+import getSocialIconUrl from '../../scripts/social-icons.js';
 
 /**
  * loads and decorates the footer
@@ -23,9 +24,11 @@ export default async function decorate(block) {
     if (section) section.classList.add(`footer-${c}`);
   });
 
-  // social icons are served from DAM rather than the code bundle
+  // social icons are served from DAM rather than the code bundle (see scripts/social-icons.js
+  // for why this needs an absolute dynamic-media URL rather than a plain DAM path)
   footer.querySelectorAll('.footer-social .icon img[data-icon-name]').forEach((img) => {
-    img.src = `/content/dam/robinsonssupermarket/icons/coloured/${img.dataset.iconName}.svg`;
+    const url = getSocialIconUrl(img.dataset.iconName);
+    if (url) img.src = url;
   });
 
   block.append(footer);
