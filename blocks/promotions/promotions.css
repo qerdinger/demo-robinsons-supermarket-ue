@@ -122,6 +122,36 @@ main .section:has(.promotions) .button-wrapper .button:focus-visible {
   color: var(--background-color);
 }
 
+.promotions.style-image-left .promotions-card-link,
+.promotions.style-image-right .promotions-card-link {
+  display: flex;
+  align-items: stretch;
+}
+
+.promotions.style-image-left .promotions-card-image,
+.promotions.style-image-right .promotions-card-image {
+  flex: 0 0 40%;
+}
+
+.promotions.style-image-left .promotions-card-image img,
+.promotions.style-image-right .promotions-card-image img {
+  height: 100%;
+  aspect-ratio: auto;
+}
+
+.promotions.style-image-left .promotions-card-body,
+.promotions.style-image-right .promotions-card-body {
+  flex: 1;
+}
+
+.promotions.style-image-right .promotions-card-image {
+  order: 2;
+}
+
+.promotions.style-image-right .promotions-card-body {
+  order: 1;
+}
+
 .promotions.style-title-only .promotions-card-image,
 .promotions.style-title-only .promotions-card-description {
   display: none;
