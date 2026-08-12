@@ -98,7 +98,7 @@ export default function decorate(block) {
 
   const backLink = document.createElement('a');
   backLink.className = 'stores-by-city-cf-back';
-  backLink.href = parentPath;
+  backLink.href = `${parentPath}.html`;
   backLink.textContent = '← Back to Store Directory';
 
   const heading = document.createElement('h1');
