@@ -1,0 +1,76 @@
+.stores-by-city-cf-back {
+  display: inline-block;
+  margin-bottom: 16px;
+  font-size: var(--body-font-size-xs);
+}
+
+.stores-by-city-cf-heading {
+  margin: 0 0 24px;
+  text-transform: uppercase;
+}
+
+.stores-by-city-cf-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stores-by-city-cf-card {
+  border: 1px solid #dadada;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.stores-by-city-cf-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.stores-by-city-cf-pin {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.stores-by-city-cf-name {
+  margin: 0;
+  font-family: var(--heading-font-family);
+  font-size: var(--heading-font-size-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.stores-by-city-cf-address {
+  margin: 0 0 12px;
+  color: var(--dark-color);
+  font-size: var(--body-font-size-xs);
+}
+
+.stores-by-city-cf-hours-label {
+  margin: 0;
+  font-weight: 700;
+  font-size: var(--body-font-size-xs);
+}
+
+.stores-by-city-cf-hours {
+  margin: 0 0 8px;
+  color: var(--dark-color);
+  font-size: var(--body-font-size-xs);
+}
+
+.stores-by-city-cf-phone {
+  margin: 0;
+  color: var(--dark-color);
+  font-size: var(--body-font-size-xs);
+}
+
+@media (width >= 600px) {
+  .stores-by-city-cf-list {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

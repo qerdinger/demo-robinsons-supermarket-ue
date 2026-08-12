@@ -522,5 +522,23 @@
         "label": "Tel No."
       }
     ]
+  },
+  {
+    "id": "stores-by-city-cf",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "aemHost",
+        "label": "AEM Host",
+        "value": "https://author-p151412-e1619656.adobeaemcloud.com"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "accessToken",
+        "label": "Access Token"
+      }
+    ]
   }
 ]

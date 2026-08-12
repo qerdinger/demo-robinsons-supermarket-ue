@@ -6,8 +6,9 @@ function renderCard(city) {
   const li = document.createElement('li');
   li.className = 'promotions-card';
 
-  const link = document.createElement('div');
+  const link = document.createElement('a');
   link.className = 'promotions-card-link';
+  link.href = `./stores?city=${encodeURIComponent(city)}`;
 
   const body = document.createElement('div');
   body.className = 'promotions-card-body';
