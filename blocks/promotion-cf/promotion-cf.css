@@ -1,6 +1,10 @@
-/* card grid styling is fully reused from blocks/promotions/promotions.css:
-   decorate() adds the "promotions" class to this block so the same
-   .promotions > ul / .promotions-card rules (and Style variants) apply here too */
+/* card grid styling is fully reused from blocks/promotions/promotions.css: decorate() adds
+   the "promotions" class to this block so the same .promotions > ul / .promotions-card
+   rules (and Style variants) apply here too. The @import is required — AEM only
+   auto-loads a block's OWN CSS file (keyed off the block's technical name in the
+   server-rendered markup), so promotions.css would otherwise only load when a literal
+   "promotions" block also happens to be present elsewhere on the same page. */
+@import url('../promotions/promotions.css');
 
 /* promotion-cf always renders exactly one card, so force a single full-width column at every
    viewport — the shared 3-column desktop grid from promotions.css would otherwise leave two
