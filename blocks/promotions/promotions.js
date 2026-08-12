@@ -3,15 +3,20 @@ import { moveInstrumentation } from '../../scripts/scripts.js';
 import getGraphqlHost from '../../scripts/graphql-host.js';
 import { fetchPromotionBySlug, renderPromotionCard } from '../../scripts/promotion-fragment.js';
 
-// fetches a CF item by slug and swaps the placeholder card for the real one once it arrives.
-// Not awaited by decorate(), so a slug-backed row never blocks the rest of the page's
-// sections from loading (see loadSections/loadSection in scripts/aem.js, which await each
-// section/block in sequence).
+// fetches a CF item by slug and fills the placeholder card in once it arrives. Updates the
+// placeholder's own class/content in place rather than replacing the element outright —
+// moveInstrumentation (below) attaches Universal Editor's data-aue-* markers to the
+// placeholder itself, so swapping in a brand-new element here would silently drop them,
+// making the item unselectable/invisible in the editor. Not awaited by decorate(), so a
+// slug-backed row never blocks the rest of the page's sections from loading (see
+// loadSections/loadSection in scripts/aem.js, which await each section/block in sequence).
 async function loadCfCard(placeholder, slug, style, href) {
   const aemHost = getGraphqlHost();
   const item = await fetchPromotionBySlug(aemHost, slug);
   if (!item) return;
-  placeholder.replaceWith(renderPromotionCard(item, aemHost, style, href));
+  const card = renderPromotionCard(item, aemHost, style, href);
+  placeholder.className = card.className;
+  placeholder.replaceChildren(...card.childNodes);
 }
 
 /**
