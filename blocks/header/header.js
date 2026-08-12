@@ -1,5 +1,10 @@
 import { getMetadata } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
+import { isAuthorEnvironment } from '../../scripts/graphql-host.js';
+
+// the site root resolves on both tiers, but only the author host needs the JCR path prefix —
+// the published site serves the homepage at a plain "/"
+const HOME_HREF = isAuthorEnvironment() ? '/content/robinsonssupermarket/index.html' : '/';
 
 // media query match that indicates mobile/tablet width
 const isDesktop = window.matchMedia('(min-width: 900px)');
@@ -152,6 +157,17 @@ export default async function decorate(block) {
   if (brandLink) {
     brandLink.className = '';
     brandLink.closest('.button-container').className = '';
+  }
+
+  // wrap the logo image itself in a link back to the homepage, so clicking the brand mark
+  // always navigates home regardless of what page the header is rendered on
+  const logoPicture = navBrand.querySelector('picture');
+  if (logoPicture && !logoPicture.closest('a')) {
+    const logoLink = document.createElement('a');
+    logoLink.href = HOME_HREF;
+    logoLink.setAttribute('aria-label', 'Home');
+    logoPicture.replaceWith(logoLink);
+    logoLink.append(logoPicture);
   }
 
   const navSections = nav.querySelector('.nav-sections');
