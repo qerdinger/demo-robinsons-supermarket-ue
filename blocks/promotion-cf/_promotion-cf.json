@@ -23,19 +23,6 @@
         {
           "component": "text",
           "valueType": "string",
-          "name": "aemHost",
-          "label": "AEM Host",
-          "value": "https://author-p151412-e1619656.adobeaemcloud.com"
-        },
-        {
-          "component": "text",
-          "valueType": "string",
-          "name": "accessToken",
-          "label": "Access Token"
-        },
-        {
-          "component": "text",
-          "valueType": "string",
           "name": "slug",
           "label": "Slug (matches one item's \"slug\" field)"
         },

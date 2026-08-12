@@ -23,22 +23,9 @@
         {
           "component": "text",
           "valueType": "string",
-          "name": "aemHost",
-          "label": "AEM Host",
-          "value": "https://author-p151412-e1619656.adobeaemcloud.com"
-        },
-        {
-          "component": "text",
-          "valueType": "string",
           "name": "graphqlQueryPath",
           "label": "GraphQL Persisted Query Path",
           "value": "Robinson/promotions-list"
-        },
-        {
-          "component": "text",
-          "valueType": "string",
-          "name": "accessToken",
-          "label": "Access Token"
         },
         {
           "component": "select",

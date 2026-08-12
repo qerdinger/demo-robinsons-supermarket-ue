@@ -1,24 +1,11 @@
+import getGraphqlHost from '../../scripts/graphql-host.js';
+
 function trimBlurb(text, maxLength = 160) {
   const trimmed = text.trim();
   return trimmed.length > maxLength ? `${trimmed.slice(0, maxLength - 1).trimEnd()}…` : trimmed;
 }
 
-// plain <img> tags can't carry the Authorization header, so once the page is published
-// (viewed without an authenticated author session cookie) a direct <img src> to the author
-// host 401s; fetching the binary with the same header and pointing <img> at a blob URL works
-// in both cases
-async function fetchAuthenticatedImageUrl(url, headers) {
-  try {
-    const res = await fetch(url, { headers });
-    if (!res.ok) return null;
-    const blob = await res.blob();
-    return URL.createObjectURL(blob);
-  } catch {
-    return null;
-  }
-}
-
-async function renderCard(item, headers, aemHost) {
+async function renderCard(item, aemHost) {
   const li = document.createElement('li');
   li.className = 'promotions-card';
 
@@ -30,17 +17,14 @@ async function renderCard(item, headers, aemHost) {
   const imagePath = item.featuredImage?._dynamicUrl || item.featuredImage?._path;
   if (imagePath) {
     const imageUrl = imagePath.startsWith('/') ? `${aemHost}${imagePath}` : imagePath;
-    const blobUrl = await fetchAuthenticatedImageUrl(imageUrl, headers);
-    if (blobUrl) {
-      const imageWrapper = document.createElement('div');
-      imageWrapper.className = 'promotions-card-image';
-      const img = document.createElement('img');
-      img.src = blobUrl;
-      img.alt = item.title || '';
-      img.loading = 'lazy';
-      imageWrapper.append(img);
-      link.append(imageWrapper);
-    }
+    const imageWrapper = document.createElement('div');
+    imageWrapper.className = 'promotions-card-image';
+    const img = document.createElement('img');
+    img.src = imageUrl;
+    img.alt = item.title || '';
+    img.loading = 'lazy';
+    imageWrapper.append(img);
+    link.append(imageWrapper);
   }
 
   const body = document.createElement('div');
@@ -63,13 +47,12 @@ async function renderCard(item, headers, aemHost) {
 }
 
 // fetches and renders the cards in the background; deliberately not awaited by decorate() so
-// this block's network round-trip (GraphQL + one image fetch per card) never blocks the rest
-// of the page's sections from loading (see loadSections/loadSection in scripts/aem.js, which
-// await each section/block in sequence)
-async function loadCards(ul, aemHost, queryPath, headers) {
+// this block's network round-trip never blocks the rest of the page's sections from loading
+// (see loadSections/loadSection in scripts/aem.js, which await each section/block in sequence)
+async function loadCards(ul, aemHost, queryPath) {
   let items = [];
   try {
-    const res = await fetch(`${aemHost}/graphql/execute.json/${queryPath}`, { headers });
+    const res = await fetch(`${aemHost}/graphql/execute.json/${queryPath}`);
     if (!res.ok) throw new Error(`GraphQL request failed: ${res.status}`);
     const json = await res.json();
     if (json.errors) throw new Error(`GraphQL errors: ${JSON.stringify(json.errors)}`);
@@ -80,7 +63,7 @@ async function loadCards(ul, aemHost, queryPath, headers) {
     return;
   }
 
-  const cards = await Promise.all(items.map((item) => renderCard(item, headers, aemHost)));
+  const cards = await Promise.all(items.map((item) => renderCard(item, aemHost)));
   cards.forEach((li) => ul.append(li));
 }
 
@@ -91,10 +74,8 @@ async function loadCards(ul, aemHost, queryPath, headers) {
  * @param {Element} block The promotions-cf block element
  */
 export default function decorate(block) {
-  const [aemHostDiv, queryPathDiv, accessTokenDiv, styleDiv] = block.children;
-  const aemHost = aemHostDiv?.textContent.trim();
+  const [queryPathDiv, styleDiv] = block.children;
   const queryPath = queryPathDiv?.textContent.trim();
-  const accessToken = accessTokenDiv?.textContent.trim();
   const style = styleDiv?.textContent.trim();
 
   block.classList.add('promotions');
@@ -102,8 +83,7 @@ export default function decorate(block) {
   const ul = document.createElement('ul');
   block.replaceChildren(ul);
 
-  if (!aemHost || !queryPath) return;
+  if (!queryPath) return;
 
-  const headers = accessToken ? { Authorization: `Bearer ${accessToken}` } : {};
-  loadCards(ul, aemHost, queryPath, headers);
+  loadCards(ul, getGraphqlHost(), queryPath);
 }

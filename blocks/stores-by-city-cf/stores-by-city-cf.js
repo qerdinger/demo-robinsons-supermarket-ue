@@ -1,8 +1,9 @@
+import getGraphqlHost from '../../scripts/graphql-host.js';
+
 // unfiltered list, fetched via a plain GET and filtered by city client-side below — AEM's
 // GET-with-";var=value" syntax for persisted query variables can't reliably carry a value
 // containing a space (every city name here has one), no matter how it's encoded, and a
-// plain parameterless GET avoids that entirely while still matching the GET+Authorization
-// pattern already used by promotion-cf/promotions-cf
+// plain parameterless GET avoids that entirely
 const QUERY_PATH = 'Robinson/all-stores';
 
 // the pin-locator icon lives in the DAM (imported from robinsonssupermarket.com.ph); its
@@ -57,10 +58,10 @@ function renderCard(item, aemHost) {
   return li;
 }
 
-async function loadCards(ul, aemHost, city, headers) {
+async function loadCards(ul, aemHost, city) {
   let items = [];
   try {
-    const res = await fetch(`${aemHost}/graphql/execute.json/${QUERY_PATH}`, { headers });
+    const res = await fetch(`${aemHost}/graphql/execute.json/${QUERY_PATH}`);
     if (!res.ok) throw new Error(`GraphQL request failed: ${res.status}`);
     const json = await res.json();
     if (json.errors) throw new Error(`GraphQL errors: ${JSON.stringify(json.errors)}`);
@@ -84,9 +85,6 @@ async function loadCards(ul, aemHost, city, headers) {
  * @param {Element} block The stores-by-city-cf block element
  */
 export default function decorate(block) {
-  const [aemHostDiv, accessTokenDiv] = block.children;
-  const aemHost = aemHostDiv?.textContent.trim();
-  const accessToken = accessTokenDiv?.textContent.trim();
   const city = new URLSearchParams(window.location.search).get('city');
 
   // build the parent page's path explicitly rather than a relative "../" link — the current
@@ -109,8 +107,7 @@ export default function decorate(block) {
   ul.className = 'stores-by-city-cf-list';
   block.replaceChildren(backLink, heading, ul);
 
-  if (!aemHost || !city) return;
+  if (!city) return;
 
-  const headers = accessToken ? { Authorization: `Bearer ${accessToken}` } : {};
-  loadCards(ul, aemHost, city, headers);
+  loadCards(ul, getGraphqlHost(), city);
 }

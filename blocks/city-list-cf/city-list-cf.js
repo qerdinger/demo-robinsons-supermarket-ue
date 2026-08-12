@@ -1,3 +1,5 @@
+import getGraphqlHost from '../../scripts/graphql-host.js';
+
 // dedicated persisted query returning one row per store with just its city field;
 // duplicates across stores in the same city are expected and deduped below
 const QUERY_PATH = 'Robinson/all-cities';
@@ -36,10 +38,10 @@ function renderCard(city) {
 // decorate() so this block's network round-trip never blocks the rest of the page's
 // sections from loading (see loadSections/loadSection in scripts/aem.js, which await
 // each section/block in sequence)
-async function loadCards(ul, aemHost, headers) {
+async function loadCards(ul, aemHost) {
   let items = [];
   try {
-    const res = await fetch(`${aemHost}/graphql/execute.json/${QUERY_PATH}`, { headers });
+    const res = await fetch(`${aemHost}/graphql/execute.json/${QUERY_PATH}`);
     if (!res.ok) throw new Error(`GraphQL request failed: ${res.status}`);
     const json = await res.json();
     if (json.errors) throw new Error(`GraphQL errors: ${JSON.stringify(json.errors)}`);
@@ -62,16 +64,9 @@ async function loadCards(ul, aemHost, headers) {
  * @param {Element} block The city-list-cf block element
  */
 export default function decorate(block) {
-  const [aemHostDiv, accessTokenDiv] = block.children;
-  const aemHost = aemHostDiv?.textContent.trim();
-  const accessToken = accessTokenDiv?.textContent.trim();
-
   block.classList.add('promotions', 'style-title-only');
   const ul = document.createElement('ul');
   block.replaceChildren(ul);
 
-  if (!aemHost) return;
-
-  const headers = accessToken ? { Authorization: `Bearer ${accessToken}` } : {};
-  loadCards(ul, aemHost, headers);
+  loadCards(ul, getGraphqlHost());
 }

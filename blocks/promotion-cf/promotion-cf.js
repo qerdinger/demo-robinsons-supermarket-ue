@@ -1,26 +1,13 @@
+import getGraphqlHost from '../../scripts/graphql-host.js';
+
 function trimBlurb(text, maxLength = 160) {
   const trimmed = text.trim();
   return trimmed.length > maxLength ? `${trimmed.slice(0, maxLength - 1).trimEnd()}…` : trimmed;
 }
 
-// plain <img> tags can't carry the Authorization header, so once the page is published
-// (viewed without an authenticated author session cookie) a direct <img src> to the author
-// host 401s; fetching the binary with the same header and pointing <img> at a blob URL works
-// in both cases
-async function fetchAuthenticatedImageUrl(url, headers) {
-  try {
-    const res = await fetch(url, { headers });
-    if (!res.ok) return null;
-    const blob = await res.blob();
-    return URL.createObjectURL(blob);
-  } catch {
-    return null;
-  }
-}
-
 // renders the fetched item using the same .promotions-card markup as the promotions/
 // promotions-cf blocks, so a promotion-cf block looks and behaves identically
-async function renderCard(item, headers, aemHost) {
+function renderCard(item, aemHost) {
   const li = document.createElement('li');
   li.className = 'promotions-card';
 
@@ -32,17 +19,14 @@ async function renderCard(item, headers, aemHost) {
   const imagePath = item.featuredImage?._dynamicUrl || item.featuredImage?._path;
   if (imagePath) {
     const imageUrl = imagePath.startsWith('/') ? `${aemHost}${imagePath}` : imagePath;
-    const blobUrl = await fetchAuthenticatedImageUrl(imageUrl, headers);
-    if (blobUrl) {
-      const imageWrapper = document.createElement('div');
-      imageWrapper.className = 'promotions-card-image';
-      const img = document.createElement('img');
-      img.src = blobUrl;
-      img.alt = item.title || '';
-      img.loading = 'lazy';
-      imageWrapper.append(img);
-      link.append(imageWrapper);
-    }
+    const imageWrapper = document.createElement('div');
+    imageWrapper.className = 'promotions-card-image';
+    const img = document.createElement('img');
+    img.src = imageUrl;
+    img.alt = item.title || '';
+    img.loading = 'lazy';
+    imageWrapper.append(img);
+    link.append(imageWrapper);
   }
 
   const body = document.createElement('div');
@@ -72,11 +56,11 @@ const QUERY_PATH = 'Robinson/promotion-by-slug';
 // block. Not awaited by decorate(), so it never blocks the rest of the page's sections/blocks
 // from loading while the network requests are in flight (see loadSections/loadSection in
 // scripts/aem.js, which await each section/block in sequence).
-async function loadCard(ul, aemHost, slug, headers) {
+async function loadCard(ul, aemHost, slug) {
   const url = `${aemHost}/graphql/execute.json/${QUERY_PATH};slug=${encodeURIComponent(slug)}`;
   let items = [];
   try {
-    const res = await fetch(url, { headers });
+    const res = await fetch(url);
     if (!res.ok) throw new Error(`GraphQL request failed: ${res.status}`);
     const json = await res.json();
     if (json.errors) throw new Error(`GraphQL errors: ${JSON.stringify(json.errors)}`);
@@ -94,7 +78,7 @@ async function loadCard(ul, aemHost, slug, headers) {
     return;
   }
 
-  ul.append(await renderCard(item, headers, aemHost));
+  ul.append(renderCard(item, aemHost));
 }
 
 /**
@@ -104,9 +88,7 @@ async function loadCard(ul, aemHost, slug, headers) {
  * @param {Element} block The promotion-cf block element
  */
 export default function decorate(block) {
-  const [aemHostDiv, accessTokenDiv, slugDiv, styleDiv] = block.children;
-  const aemHost = aemHostDiv?.textContent.trim();
-  const accessToken = accessTokenDiv?.textContent.trim();
+  const [slugDiv, styleDiv] = block.children;
   const slug = slugDiv?.textContent.trim();
   const style = styleDiv?.textContent.trim();
 
@@ -115,8 +97,7 @@ export default function decorate(block) {
   const ul = document.createElement('ul');
   block.replaceChildren(ul);
 
-  if (!aemHost || !slug) return;
+  if (!slug) return;
 
-  const headers = accessToken ? { Authorization: `Bearer ${accessToken}` } : {};
-  loadCard(ul, aemHost, slug, headers);
+  loadCard(ul, getGraphqlHost(), slug);
 }
