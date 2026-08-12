@@ -1,4 +1,4 @@
-import getGraphqlHost from '../../scripts/graphql-host.js';
+import getGraphqlHost, { isAuthorEnvironment } from '../../scripts/graphql-host.js';
 
 // unfiltered list, fetched via a plain GET and filtered by city client-side below — AEM's
 // GET-with-";var=value" syntax for persisted query variables can't reliably carry a value
@@ -90,13 +90,15 @@ export default function decorate(block) {
   // build the parent page's path explicitly rather than a relative "../" link — the current
   // document URL commonly ends in a filename-like segment (e.g. "stores.html" on the author
   // host), so "../" resolves against the URL's directory and lands one level too high (see
-  // the identical bug fixed in city-list.js's storesPageHref)
+  // the identical bug fixed in city-list.js's storesPageHref). The ".html" extension itself
+  // is only needed (and only served) on the author instance.
   const currentPath = window.location.pathname.replace(/\.html$/, '').replace(/\/$/, '');
   const parentPath = currentPath.slice(0, currentPath.lastIndexOf('/')) || '/';
+  const extension = isAuthorEnvironment() ? '.html' : '';
 
   const backLink = document.createElement('a');
   backLink.className = 'stores-by-city-back';
-  backLink.href = `${parentPath}.html`;
+  backLink.href = `${parentPath}${extension}`;
   backLink.textContent = '← Back to Store Directory';
 
   const heading = document.createElement('h1');

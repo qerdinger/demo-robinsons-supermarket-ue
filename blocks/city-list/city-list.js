@@ -1,4 +1,4 @@
-import getGraphqlHost from '../../scripts/graphql-host.js';
+import getGraphqlHost, { isAuthorEnvironment } from '../../scripts/graphql-host.js';
 
 // dedicated persisted query returning one row per store with just its city field;
 // duplicates across stores in the same city are expected and deduped below
@@ -8,10 +8,13 @@ const QUERY_PATH = 'Robinson/all-cities';
 // on the author host, or an extension-less "/store-locator" on the published site) rather than
 // a trailing slash, so a plain relative "./stores" link resolves one level too high (against
 // the URL's parent directory) instead of into a "store-locator/stores" sibling page — build the
-// target path explicitly off the current page's own path instead of relying on that resolution
+// target path explicitly off the current page's own path instead of relying on that resolution.
+// The ".html" extension itself is only needed (and only served) on the author instance —
+// the published site uses clean, extension-less paths.
 function storesPageHref(city) {
   const base = window.location.pathname.replace(/\.html$/, '').replace(/\/$/, '');
-  return `${base}/stores.html?city=${encodeURIComponent(city)}`;
+  const extension = isAuthorEnvironment() ? '.html' : '';
+  return `${base}/stores${extension}?city=${encodeURIComponent(city)}`;
 }
 
 function renderCard(city) {
