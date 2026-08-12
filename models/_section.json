@@ -35,6 +35,10 @@
               "value": "highlight"
             },
             {
+              "name": "Green Highlight",
+              "value": "highlight-green"
+            },
+            {
               "name": "CTA Accent",
               "value": "cta-accent"
             }

@@ -14,6 +14,7 @@
   /* colors */
   --background-color: white;
   --light-color: #f8f8f8;
+  --highlight-green-color: #e3efd9;
   --dark-color: #505050;
   --text-color: #131313;
   --link-color: #3b63fb;
@@ -320,6 +321,12 @@ main > .section:first-of-type {
 main .section.light,
 main .section.highlight {
   background-color: var(--light-color);
+  margin: 0;
+  padding: 40px 0;
+}
+
+main .section.highlight-green {
+  background-color: var(--highlight-green-color);
   margin: 0;
   padding: 40px 0;
 }
