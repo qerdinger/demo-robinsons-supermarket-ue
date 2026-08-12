@@ -314,6 +314,59 @@
     ]
   },
   {
+    "id": "promotion-cf",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "aemHost",
+        "label": "AEM Host",
+        "value": "https://author-p151412-e1619656.adobeaemcloud.com"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "accessToken",
+        "label": "Access Token"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "slug",
+        "label": "Slug (matches one item's \"slug\" field)"
+      },
+      {
+        "component": "select",
+        "valueType": "string",
+        "name": "style",
+        "label": "Style",
+        "value": "default",
+        "options": [
+          {
+            "name": "Default (Image Top)",
+            "value": "default"
+          },
+          {
+            "name": "Image Bottom",
+            "value": "image-bottom"
+          },
+          {
+            "name": "Image Background",
+            "value": "image-background"
+          },
+          {
+            "name": "Title Only",
+            "value": "title-only"
+          },
+          {
+            "name": "Text Only",
+            "value": "text-only"
+          }
+        ]
+      }
+    ]
+  },
+  {
     "id": "promotions-cf",
     "fields": [
       {
