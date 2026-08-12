@@ -6,7 +6,7 @@ function trimBlurb(text, maxLength = 160) {
 }
 
 // renders the fetched item using the same .promotions-card markup as the promotions/
-// promotions-cf blocks, so a promotion-cf block looks and behaves identically
+// promotions-cf blocks, so a promotion block looks and behaves identically
 function renderCard(item, aemHost) {
   const li = document.createElement('li');
   li.className = 'promotions-card';
@@ -67,14 +67,14 @@ async function loadCard(ul, aemHost, slug) {
     items = Object.values(json?.data || {})[0]?.items || [];
   } catch (error) {
     // eslint-disable-next-line no-console
-    console.error('promotion-cf: failed to load GraphQL data', error);
+    console.error('promotion: failed to load GraphQL data', error);
     return;
   }
 
   const [item] = items;
   if (!item) {
     // eslint-disable-next-line no-console
-    console.error(`promotion-cf: no item found with slug "${slug}"`);
+    console.error(`promotion: no item found with slug "${slug}"`);
     return;
   }
 
@@ -82,10 +82,10 @@ async function loadCard(ul, aemHost, slug) {
 }
 
 /**
- * loads and decorates the promotion-cf block: fetches a single card from a public GraphQL
+ * loads and decorates the promotion block: fetches a single card from a public GraphQL
  * persisted query, matched by its slug, instead of authored block items. The fetch itself
  * runs in the background (see loadCard) so this block never blocks the rest of the page.
- * @param {Element} block The promotion-cf block element
+ * @param {Element} block The promotion block element
  */
 export default function decorate(block) {
   const [slugDiv, styleDiv] = block.children;

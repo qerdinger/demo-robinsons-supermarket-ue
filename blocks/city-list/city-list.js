@@ -48,7 +48,7 @@ async function loadCards(ul, aemHost) {
     items = Object.values(json?.data || {})[0]?.items || [];
   } catch (error) {
     // eslint-disable-next-line no-console
-    console.error('city-list-cf: failed to load GraphQL data', error);
+    console.error('city-list: failed to load GraphQL data', error);
     return;
   }
 
@@ -57,11 +57,11 @@ async function loadCards(ul, aemHost) {
 }
 
 /**
- * loads and decorates the city-list-cf block: fetches the list of cities from a public
+ * loads and decorates the city-list block: fetches the list of cities from a public
  * GraphQL persisted query (deduplicated client-side) and renders them as text-only cards.
  * The fetch itself runs in the background (see loadCards) so this block never blocks the
  * rest of the page.
- * @param {Element} block The city-list-cf block element
+ * @param {Element} block The city-list block element
  */
 export default function decorate(block) {
   block.classList.add('promotions', 'style-title-only');

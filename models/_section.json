@@ -64,10 +64,9 @@
         "store-locator",
         "banner",
         "contact-card",
-        "promotions-cf",
-        "promotion-cf",
-        "city-list-cf",
-        "stores-by-city-cf"
+        "promotion",
+        "city-list",
+        "stores-by-city"
       ]
     }
   ]

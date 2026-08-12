@@ -234,7 +234,7 @@
     ]
   },
   {
-    "id": "city-list-cf",
+    "id": "city-list",
     "fields": []
   },
   {
@@ -322,62 +322,13 @@
     ]
   },
   {
-    "id": "promotion-cf",
+    "id": "promotion",
     "fields": [
       {
         "component": "text",
         "valueType": "string",
         "name": "slug",
         "label": "Slug (matches one item's \"slug\" field)"
-      },
-      {
-        "component": "select",
-        "valueType": "string",
-        "name": "style",
-        "label": "Style",
-        "value": "default",
-        "options": [
-          {
-            "name": "Default (Image Top)",
-            "value": "default"
-          },
-          {
-            "name": "Image Bottom",
-            "value": "image-bottom"
-          },
-          {
-            "name": "Image Left / Info Right",
-            "value": "image-left"
-          },
-          {
-            "name": "Image Right / Info Left",
-            "value": "image-right"
-          },
-          {
-            "name": "Image Background",
-            "value": "image-background"
-          },
-          {
-            "name": "Title Only",
-            "value": "title-only"
-          },
-          {
-            "name": "Text Only",
-            "value": "text-only"
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "id": "promotions-cf",
-    "fields": [
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "graphqlQueryPath",
-        "label": "GraphQL Persisted Query Path",
-        "value": "Robinson/promotions-list"
       },
       {
         "component": "select",
@@ -484,7 +435,7 @@
     ]
   },
   {
-    "id": "stores-by-city-cf",
+    "id": "stores-by-city",
     "fields": []
   }
 ]

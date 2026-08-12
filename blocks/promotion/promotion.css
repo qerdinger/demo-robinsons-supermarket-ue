@@ -6,9 +6,9 @@
    "promotions" block also happens to be present elsewhere on the same page. */
 @import url('../promotions/promotions.css');
 
-/* promotion-cf always renders exactly one card, so force a single full-width column at every
+/* promotion always renders exactly one card, so force a single full-width column at every
    viewport — the shared 3-column desktop grid from promotions.css would otherwise leave two
    empty grid tracks next to the lone card */
-.promotion-cf.promotions > ul {
+.promotion.promotions > ul {
   grid-template-columns: 1fr;
 }

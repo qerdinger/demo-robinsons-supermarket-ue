@@ -1,15 +1,15 @@
-.stores-by-city-cf-back {
+.stores-by-city-back {
   display: inline-block;
   margin-bottom: 16px;
   font-size: var(--body-font-size-xs);
 }
 
-.stores-by-city-cf-heading {
+.stores-by-city-heading {
   margin: 0 0 24px;
   text-transform: uppercase;
 }
 
-.stores-by-city-cf-list {
+.stores-by-city-list {
   display: grid;
   grid-template-columns: 1fr;
   gap: 24px;
@@ -18,26 +18,26 @@
   list-style: none;
 }
 
-.stores-by-city-cf-card {
+.stores-by-city-card {
   border: 1px solid #dadada;
   border-radius: 8px;
   padding: 16px;
 }
 
-.stores-by-city-cf-card-header {
+.stores-by-city-card-header {
   display: flex;
   align-items: center;
   gap: 8px;
   margin-bottom: 8px;
 }
 
-.stores-by-city-cf-pin {
+.stores-by-city-pin {
   width: 20px;
   height: 20px;
   flex-shrink: 0;
 }
 
-.stores-by-city-cf-name {
+.stores-by-city-name {
   margin: 0;
   font-family: var(--heading-font-family);
   font-size: var(--heading-font-size-xs);
@@ -45,32 +45,32 @@
   text-transform: uppercase;
 }
 
-.stores-by-city-cf-address {
+.stores-by-city-address {
   margin: 0 0 12px;
   color: var(--dark-color);
   font-size: var(--body-font-size-xs);
 }
 
-.stores-by-city-cf-hours-label {
+.stores-by-city-hours-label {
   margin: 0;
   font-weight: 700;
   font-size: var(--body-font-size-xs);
 }
 
-.stores-by-city-cf-hours {
+.stores-by-city-hours {
   margin: 0 0 8px;
   color: var(--dark-color);
   font-size: var(--body-font-size-xs);
 }
 
-.stores-by-city-cf-phone {
+.stores-by-city-phone {
   margin: 0;
   color: var(--dark-color);
   font-size: var(--body-font-size-xs);
 }
 
 @media (width >= 600px) {
-  .stores-by-city-cf-list {
+  .stores-by-city-list {
     grid-template-columns: repeat(3, 1fr);
   }
 }

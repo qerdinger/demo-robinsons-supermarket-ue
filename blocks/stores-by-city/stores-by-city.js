@@ -13,19 +13,19 @@ const PIN_ICON_PATH = '/adobe/dynamicmedia/deliver/dm-aid--cdd654d7-d999-456a-97
 
 function renderCard(item, aemHost) {
   const li = document.createElement('li');
-  li.className = 'stores-by-city-cf-card';
+  li.className = 'stores-by-city-card';
 
   const header = document.createElement('div');
-  header.className = 'stores-by-city-cf-card-header';
+  header.className = 'stores-by-city-card-header';
   const pin = document.createElement('img');
-  pin.className = 'stores-by-city-cf-pin';
+  pin.className = 'stores-by-city-pin';
   pin.src = `${aemHost}${PIN_ICON_PATH}`;
   pin.alt = '';
   pin.loading = 'lazy';
   header.append(pin);
   if (item.storeName) {
     const nameEl = document.createElement('p');
-    nameEl.className = 'stores-by-city-cf-name';
+    nameEl.className = 'stores-by-city-name';
     nameEl.textContent = item.storeName;
     header.append(nameEl);
   }
@@ -33,24 +33,24 @@ function renderCard(item, aemHost) {
 
   if (item.storeAddress) {
     const addressEl = document.createElement('p');
-    addressEl.className = 'stores-by-city-cf-address';
+    addressEl.className = 'stores-by-city-address';
     addressEl.textContent = item.storeAddress;
     li.append(addressEl);
   }
   if (item.storeHours?.plaintext) {
     const hoursLabelEl = document.createElement('p');
-    hoursLabelEl.className = 'stores-by-city-cf-hours-label';
+    hoursLabelEl.className = 'stores-by-city-hours-label';
     hoursLabelEl.textContent = 'Store Hours';
     li.append(hoursLabelEl);
 
     const hoursEl = document.createElement('p');
-    hoursEl.className = 'stores-by-city-cf-hours';
+    hoursEl.className = 'stores-by-city-hours';
     hoursEl.textContent = item.storeHours.plaintext;
     li.append(hoursEl);
   }
   if (item.storePhone) {
     const phoneEl = document.createElement('p');
-    phoneEl.className = 'stores-by-city-cf-phone';
+    phoneEl.className = 'stores-by-city-phone';
     phoneEl.textContent = `Tel No.: ${item.storePhone}`;
     li.append(phoneEl);
   }
@@ -68,7 +68,7 @@ async function loadCards(ul, aemHost, city) {
     items = Object.values(json?.data || {})[0]?.items || [];
   } catch (error) {
     // eslint-disable-next-line no-console
-    console.error('stores-by-city-cf: failed to load GraphQL data', error);
+    console.error('stores-by-city: failed to load GraphQL data', error);
     return;
   }
 
@@ -78,11 +78,11 @@ async function loadCards(ul, aemHost, city) {
 }
 
 /**
- * loads and decorates the stores-by-city-cf block: reads the "city" query parameter from
+ * loads and decorates the stores-by-city block: reads the "city" query parameter from
  * the current page URL and fetches every store in that city from a public GraphQL
  * persisted query. The fetch itself runs in the background (see loadCards) so this block
  * never blocks the rest of the page.
- * @param {Element} block The stores-by-city-cf block element
+ * @param {Element} block The stores-by-city block element
  */
 export default function decorate(block) {
   const city = new URLSearchParams(window.location.search).get('city');
@@ -90,21 +90,21 @@ export default function decorate(block) {
   // build the parent page's path explicitly rather than a relative "../" link — the current
   // document URL commonly ends in a filename-like segment (e.g. "stores.html" on the author
   // host), so "../" resolves against the URL's directory and lands one level too high (see
-  // the identical bug fixed in city-list-cf.js's storesPageHref)
+  // the identical bug fixed in city-list.js's storesPageHref)
   const currentPath = window.location.pathname.replace(/\.html$/, '').replace(/\/$/, '');
   const parentPath = currentPath.slice(0, currentPath.lastIndexOf('/')) || '/';
 
   const backLink = document.createElement('a');
-  backLink.className = 'stores-by-city-cf-back';
+  backLink.className = 'stores-by-city-back';
   backLink.href = `${parentPath}.html`;
   backLink.textContent = '← Back to Store Directory';
 
   const heading = document.createElement('h1');
-  heading.className = 'stores-by-city-cf-heading';
+  heading.className = 'stores-by-city-heading';
   heading.textContent = city || 'Stores';
 
   const ul = document.createElement('ul');
-  ul.className = 'stores-by-city-cf-list';
+  ul.className = 'stores-by-city-list';
   block.replaceChildren(backLink, heading, ul);
 
   if (!city) return;
