@@ -90,9 +90,16 @@ export default function decorate(block) {
   const accessToken = accessTokenDiv?.textContent.trim();
   const city = new URLSearchParams(window.location.search).get('city');
 
+  // build the parent page's path explicitly rather than a relative "../" link — the current
+  // document URL commonly ends in a filename-like segment (e.g. "stores.html" on the author
+  // host), so "../" resolves against the URL's directory and lands one level too high (see
+  // the identical bug fixed in city-list-cf.js's storesPageHref)
+  const currentPath = window.location.pathname.replace(/\.html$/, '').replace(/\/$/, '');
+  const parentPath = currentPath.slice(0, currentPath.lastIndexOf('/')) || '/';
+
   const backLink = document.createElement('a');
   backLink.className = 'stores-by-city-cf-back';
-  backLink.href = '../';
+  backLink.href = parentPath;
   backLink.textContent = '← Back to Store Directory';
 
   const heading = document.createElement('h1');

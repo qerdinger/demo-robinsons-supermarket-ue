@@ -2,13 +2,23 @@
 // duplicates across stores in the same city are expected and deduped below
 const QUERY_PATH = 'Robinson/all-cities';
 
+// the current document URL commonly ends in a filename-like segment (e.g. "store-locator.html"
+// on the author host, or an extension-less "/store-locator" on the published site) rather than
+// a trailing slash, so a plain relative "./stores" link resolves one level too high (against
+// the URL's parent directory) instead of into a "store-locator/stores" sibling page — build the
+// target path explicitly off the current page's own path instead of relying on that resolution
+function storesPageHref(city) {
+  const base = window.location.pathname.replace(/\.html$/, '').replace(/\/$/, '');
+  return `${base}/stores.html?city=${encodeURIComponent(city)}`;
+}
+
 function renderCard(city) {
   const li = document.createElement('li');
   li.className = 'promotions-card';
 
   const link = document.createElement('a');
   link.className = 'promotions-card-link';
-  link.href = `./stores?city=${encodeURIComponent(city)}`;
+  link.href = storesPageHref(city);
 
   const body = document.createElement('div');
   body.className = 'promotions-card-body';
