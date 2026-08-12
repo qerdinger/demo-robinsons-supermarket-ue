@@ -73,90 +73,92 @@ main .section:has(.promotions) .button-wrapper .button:focus-visible {
   }
 }
 
-/* Style System variants (promotions-cf's "Style System" field): each reorders/hides the same
-   image + title + description markup rather than changing what gets rendered, so styling stays
-   purely CSS-driven regardless of which layout an author picks. */
-.promotions.style-image-bottom .promotions-card-link {
+/* Style variants: scoped to the individual card (not the block) so each row/item can carry
+   its own style independently — e.g. promotions' authored items and CF-slug-backed items can
+   mix different styles in the same list, and promotion/city-list apply theirs per rendered
+   card too. Each variant reorders/hides the same image + title + description markup rather
+   than changing what gets rendered, so styling stays purely CSS-driven. */
+.promotions-card.style-image-bottom .promotions-card-link {
   display: flex;
   flex-direction: column;
 }
 
-.promotions.style-image-bottom .promotions-card-image {
+.promotions-card.style-image-bottom .promotions-card-image {
   order: 2;
 }
 
-.promotions.style-image-bottom .promotions-card-body {
+.promotions-card.style-image-bottom .promotions-card-body {
   order: 1;
 }
 
-.promotions.style-image-background .promotions-card {
+.promotions-card.style-image-background {
   position: relative;
 }
 
-.promotions.style-image-background .promotions-card-link {
+.promotions-card.style-image-background .promotions-card-link {
   display: flex;
   min-height: 280px;
   flex-direction: column;
   justify-content: flex-end;
 }
 
-.promotions.style-image-background .promotions-card-image {
+.promotions-card.style-image-background .promotions-card-image {
   position: absolute;
   inset: 0;
   line-height: 0;
 }
 
-.promotions.style-image-background .promotions-card-image img {
+.promotions-card.style-image-background .promotions-card-image img {
   height: 100%;
 }
 
-.promotions.style-image-background .promotions-card-body {
+.promotions-card.style-image-background .promotions-card-body {
   position: relative;
   z-index: 1;
   padding: 16px;
   background: linear-gradient(to top, rgb(0 0 0 / 70%), transparent 65%);
 }
 
-.promotions.style-image-background .promotions-card-title,
-.promotions.style-image-background .promotions-card-description {
+.promotions-card.style-image-background .promotions-card-title,
+.promotions-card.style-image-background .promotions-card-description {
   color: var(--background-color);
 }
 
-.promotions.style-image-left .promotions-card-link,
-.promotions.style-image-right .promotions-card-link {
+.promotions-card.style-image-left .promotions-card-link,
+.promotions-card.style-image-right .promotions-card-link {
   display: flex;
   align-items: stretch;
 }
 
-.promotions.style-image-left .promotions-card-image,
-.promotions.style-image-right .promotions-card-image {
+.promotions-card.style-image-left .promotions-card-image,
+.promotions-card.style-image-right .promotions-card-image {
   flex: 0 0 40%;
 }
 
-.promotions.style-image-left .promotions-card-image img,
-.promotions.style-image-right .promotions-card-image img {
+.promotions-card.style-image-left .promotions-card-image img,
+.promotions-card.style-image-right .promotions-card-image img {
   height: 100%;
   aspect-ratio: auto;
 }
 
-.promotions.style-image-left .promotions-card-body,
-.promotions.style-image-right .promotions-card-body {
+.promotions-card.style-image-left .promotions-card-body,
+.promotions-card.style-image-right .promotions-card-body {
   flex: 1;
 }
 
-.promotions.style-image-right .promotions-card-image {
+.promotions-card.style-image-right .promotions-card-image {
   order: 2;
 }
 
-.promotions.style-image-right .promotions-card-body {
+.promotions-card.style-image-right .promotions-card-body {
   order: 1;
 }
 
-.promotions.style-title-only .promotions-card-image,
-.promotions.style-title-only .promotions-card-description {
+.promotions-card.style-title-only .promotions-card-image,
+.promotions-card.style-title-only .promotions-card-description {
   display: none;
 }
 
-.promotions.style-text-only .promotions-card-image {
+.promotions-card.style-text-only .promotions-card-image {
   display: none;
 }

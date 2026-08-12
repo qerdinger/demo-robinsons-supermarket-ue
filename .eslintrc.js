@@ -18,5 +18,8 @@ module.exports = {
     'import/extensions': ['error', { js: 'always' }], // require js file extensions in imports
     'linebreak-style': ['error', 'unix'], // enforce unix linebreaks
     'no-param-reassign': [2, { props: false }], // allow modifying properties of param
+    // promotion-item is a hybrid model: authored image/title/description/linkHref OR a CF
+    // slug + style, so it needs more cells than the general 4-field default
+    'xwalk/max-cells': ['error', { 'promotion-item': 6 }],
   },
 };

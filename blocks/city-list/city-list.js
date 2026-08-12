@@ -16,7 +16,7 @@ function storesPageHref(city) {
 
 function renderCard(city) {
   const li = document.createElement('li');
-  li.className = 'promotions-card';
+  li.className = 'promotions-card style-title-only';
 
   const link = document.createElement('a');
   link.className = 'promotions-card-link';
@@ -64,7 +64,7 @@ async function loadCards(ul, aemHost) {
  * @param {Element} block The city-list block element
  */
 export default function decorate(block) {
-  block.classList.add('promotions', 'style-title-only');
+  block.classList.add('promotions');
   const ul = document.createElement('ul');
   block.replaceChildren(ul);
 

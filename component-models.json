@@ -402,6 +402,49 @@
         "valueType": "string",
         "name": "linkHref",
         "label": "Link URL"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "slug",
+        "label": "Slug (Content Fragment) — when set, fetches this item from the CF instead of the authored fields above"
+      },
+      {
+        "component": "select",
+        "valueType": "string",
+        "name": "style",
+        "label": "Style",
+        "value": "default",
+        "options": [
+          {
+            "name": "Default (Image Top)",
+            "value": "default"
+          },
+          {
+            "name": "Image Bottom",
+            "value": "image-bottom"
+          },
+          {
+            "name": "Image Left / Info Right",
+            "value": "image-left"
+          },
+          {
+            "name": "Image Right / Info Left",
+            "value": "image-right"
+          },
+          {
+            "name": "Image Background",
+            "value": "image-background"
+          },
+          {
+            "name": "Title Only",
+            "value": "title-only"
+          },
+          {
+            "name": "Text Only",
+            "value": "text-only"
+          }
+        ]
       }
     ]
   },
