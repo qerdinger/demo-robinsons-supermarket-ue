@@ -62,27 +62,11 @@ async function renderCard(item, headers, aemHost) {
   return li;
 }
 
-/**
- * loads and decorates the promotions-cf block: fetches its cards from a public
- * GraphQL persisted query instead of authored block items
- * @param {Element} block The promotions-cf block element
- */
-export default async function decorate(block) {
-  const [aemHostDiv, queryPathDiv, accessTokenDiv, styleDiv] = block.children;
-  const aemHost = aemHostDiv?.textContent.trim();
-  const queryPath = queryPathDiv?.textContent.trim();
-  const accessToken = accessTokenDiv?.textContent.trim();
-  const style = styleDiv?.textContent.trim();
-
-  block.classList.add('promotions');
-  if (style && style !== 'default') block.classList.add(`style-${style}`);
-  const ul = document.createElement('ul');
-  block.replaceChildren(ul);
-
-  if (!aemHost || !queryPath) return;
-
-  const headers = accessToken ? { Authorization: `Bearer ${accessToken}` } : {};
-
+// fetches and renders the cards in the background; deliberately not awaited by decorate() so
+// this block's network round-trip (GraphQL + one image fetch per card) never blocks the rest
+// of the page's sections from loading (see loadSections/loadSection in scripts/aem.js, which
+// await each section/block in sequence)
+async function loadCards(ul, aemHost, queryPath, headers) {
   let items = [];
   try {
     const res = await fetch(`${aemHost}/graphql/execute.json/${queryPath}`, { headers });
@@ -98,4 +82,28 @@ export default async function decorate(block) {
 
   const cards = await Promise.all(items.map((item) => renderCard(item, headers, aemHost)));
   cards.forEach((li) => ul.append(li));
+}
+
+/**
+ * loads and decorates the promotions-cf block: fetches its cards from a public
+ * GraphQL persisted query instead of authored block items. The fetch itself runs
+ * in the background (see loadCards) so this block never blocks the rest of the page.
+ * @param {Element} block The promotions-cf block element
+ */
+export default function decorate(block) {
+  const [aemHostDiv, queryPathDiv, accessTokenDiv, styleDiv] = block.children;
+  const aemHost = aemHostDiv?.textContent.trim();
+  const queryPath = queryPathDiv?.textContent.trim();
+  const accessToken = accessTokenDiv?.textContent.trim();
+  const style = styleDiv?.textContent.trim();
+
+  block.classList.add('promotions');
+  if (style && style !== 'default') block.classList.add(`style-${style}`);
+  const ul = document.createElement('ul');
+  block.replaceChildren(ul);
+
+  if (!aemHost || !queryPath) return;
+
+  const headers = accessToken ? { Authorization: `Bearer ${accessToken}` } : {};
+  loadCards(ul, aemHost, queryPath, headers);
 }
