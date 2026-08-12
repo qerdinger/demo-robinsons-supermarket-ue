@@ -35,14 +35,17 @@ export async function fetchPromotionBySlug(aemHost, slug) {
  * @param {object} item the content fragment item ({ title, main, featuredImage })
  * @param {string} aemHost the AEM host, used to resolve relative image paths
  * @param {string} [style] optional "style-<value>" modifier class for this card
+ * @param {string} [href] optional link URL — the fragment itself has no URL field, so the
+ * whole card is only clickable when the author supplies one alongside the slug
  * @returns {HTMLLIElement} the rendered card
  */
-export function renderPromotionCard(item, aemHost, style) {
+export function renderPromotionCard(item, aemHost, style, href) {
   const li = document.createElement('li');
   li.className = 'promotions-card';
   if (style && style !== 'default') li.classList.add(`style-${style}`);
 
-  const link = document.createElement('div');
+  const link = href ? document.createElement('a') : document.createElement('div');
+  if (href) link.href = href;
   link.className = 'promotions-card-link';
 
   // GraphQL's Content Fragment schema names these fields with a leading underscore

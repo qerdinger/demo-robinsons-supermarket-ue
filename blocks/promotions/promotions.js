@@ -7,11 +7,11 @@ import { fetchPromotionBySlug, renderPromotionCard } from '../../scripts/promoti
 // Not awaited by decorate(), so a slug-backed row never blocks the rest of the page's
 // sections from loading (see loadSections/loadSection in scripts/aem.js, which await each
 // section/block in sequence).
-async function loadCfCard(placeholder, slug, style) {
+async function loadCfCard(placeholder, slug, style, href) {
   const aemHost = getGraphqlHost();
   const item = await fetchPromotionBySlug(aemHost, slug);
   if (!item) return;
-  placeholder.replaceWith(renderPromotionCard(item, aemHost, style));
+  placeholder.replaceWith(renderPromotionCard(item, aemHost, style, href));
 }
 
 /**
@@ -28,21 +28,21 @@ export default function decorate(block) {
     const [imageDiv, titleDiv, descriptionDiv, linkDiv, slugDiv, styleDiv] = row.children;
     const slug = slugDiv?.textContent.trim();
     const style = styleDiv?.textContent.trim();
+    const link = linkDiv?.querySelector('a');
+    const href = link ? link.href : linkDiv?.textContent.trim();
 
     if (slug) {
       const placeholder = document.createElement('li');
       placeholder.className = 'promotions-card';
       moveInstrumentation(row, placeholder);
       ul.append(placeholder);
-      loadCfCard(placeholder, slug, style);
+      loadCfCard(placeholder, slug, style, href);
       return;
     }
 
     const picture = imageDiv?.querySelector('picture');
     const title = titleDiv?.textContent.trim();
     const description = descriptionDiv?.textContent.trim();
-    const link = linkDiv?.querySelector('a');
-    const href = link ? link.href : linkDiv?.textContent.trim();
 
     const li = document.createElement('li');
     li.className = 'promotions-card';
