@@ -1,4 +1,9 @@
-const QUERY_PATH = 'Robinson/stores-by-city';
+// unfiltered list, fetched via a plain GET and filtered by city client-side below — AEM's
+// GET-with-";var=value" syntax for persisted query variables can't reliably carry a value
+// containing a space (every city name here has one), no matter how it's encoded, and a
+// plain parameterless GET avoids that entirely while still matching the GET+Authorization
+// pattern already used by promotion-cf/promotions-cf
+const QUERY_PATH = 'Robinson/all-stores';
 
 // the pin-locator icon lives in the DAM (imported from robinsonssupermarket.com.ph); its
 // dynamic-media delivery path is the same on the author and publish tiers, only the host
@@ -52,18 +57,10 @@ function renderCard(item, aemHost) {
   return li;
 }
 
-// the stores-by-city persisted query needs its city variable posted in the request body —
-// passing it as a `;city=...` URL segment (the GET-style syntax used elsewhere in this
-// project) silently returns an empty result whenever the value contains a space, which
-// every city name here does
 async function loadCards(ul, aemHost, city, headers) {
   let items = [];
   try {
-    const res = await fetch(`${aemHost}/graphql/execute.json/${QUERY_PATH}`, {
-      method: 'POST',
-      headers: { ...headers, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ variables: { city } }),
-    });
+    const res = await fetch(`${aemHost}/graphql/execute.json/${QUERY_PATH}`, { headers });
     if (!res.ok) throw new Error(`GraphQL request failed: ${res.status}`);
     const json = await res.json();
     if (json.errors) throw new Error(`GraphQL errors: ${JSON.stringify(json.errors)}`);
@@ -74,7 +71,9 @@ async function loadCards(ul, aemHost, city, headers) {
     return;
   }
 
-  items.forEach((item) => ul.append(renderCard(item, aemHost)));
+  items
+    .filter((item) => item.city === city)
+    .forEach((item) => ul.append(renderCard(item, aemHost)));
 }
 
 /**
