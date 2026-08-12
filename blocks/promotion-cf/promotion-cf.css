@@ -1,3 +1,10 @@
 /* card grid styling is fully reused from blocks/promotions/promotions.css:
    decorate() adds the "promotions" class to this block so the same
    .promotions > ul / .promotions-card rules (and Style variants) apply here too */
+
+/* promotion-cf always renders exactly one card, so force a single full-width column at every
+   viewport — the shared 3-column desktop grid from promotions.css would otherwise leave two
+   empty grid tracks next to the lone card */
+.promotion-cf.promotions > ul {
+  grid-template-columns: 1fr;
+}
