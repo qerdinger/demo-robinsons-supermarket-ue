@@ -325,57 +325,6 @@
     "id": "promotion",
     "fields": [
       {
-        "component": "aem-content-fragment",
-        "valueType": "string",
-        "name": "fragmentPath",
-        "label": "Promotion (Content Fragment)",
-        "validation": {
-          "rootPath": "/content/dam/rrhi/promotions-cf"
-        }
-      },
-      {
-        "component": "select",
-        "valueType": "string",
-        "name": "style",
-        "label": "Style",
-        "value": "default",
-        "options": [
-          {
-            "name": "Default (Image Top)",
-            "value": "default"
-          },
-          {
-            "name": "Image Bottom",
-            "value": "image-bottom"
-          },
-          {
-            "name": "Image Left",
-            "value": "image-left"
-          },
-          {
-            "name": "Image Right",
-            "value": "image-right"
-          },
-          {
-            "name": "Image Background",
-            "value": "image-background"
-          },
-          {
-            "name": "Title Only",
-            "value": "title-only"
-          },
-          {
-            "name": "Text Only",
-            "value": "text-only"
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "id": "promotion-item",
-    "fields": [
-      {
         "component": "reference",
         "valueType": "string",
         "name": "image",
@@ -410,7 +359,7 @@
         "component": "aem-content-fragment",
         "valueType": "string",
         "name": "fragmentPath",
-        "label": "Promotion (Content Fragment) — when set, fetches this item from the CF instead of the authored fields above",
+        "label": "Promotion (Content Fragment) — optional; when set, takes over from the authored fields above",
         "validation": {
           "rootPath": "/content/dam/rrhi/promotions-cf"
         }

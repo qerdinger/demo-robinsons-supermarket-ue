@@ -263,15 +263,15 @@
           }
         },
         {
-          "title": "Promotion Item",
+          "title": "Promotion",
           "id": "promotion-item",
           "plugins": {
             "xwalk": {
               "page": {
                 "resourceType": "core/franklin/components/block/v1/block/item",
                 "template": {
-                  "name": "Promotion Item",
-                  "model": "promotion-item"
+                  "name": "Promotion",
+                  "model": "promotion"
                 }
               }
             }
