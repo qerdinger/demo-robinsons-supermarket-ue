@@ -48,6 +48,13 @@
   font-size: var(--body-font-size-xs);
 }
 
+.promotions-card-dates {
+  margin: 8px 0 0;
+  color: var(--dark-color);
+  font-size: var(--body-font-size-xs);
+  font-style: italic;
+}
+
 /* the button below the promotions grid is centered and uses the brand green,
    scoped to sections that contain a promotions block so other CTAs are unaffected */
 main .section:has(.promotions) .button-wrapper {

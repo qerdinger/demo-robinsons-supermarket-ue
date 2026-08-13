@@ -13,6 +13,37 @@ function trimBlurb(text, maxLength = 160) {
   return trimmed.length > maxLength ? `${trimmed.slice(0, maxLength - 1).trimEnd()}…` : trimmed;
 }
 
+// parses a "YYYY-MM-DD" (or "YYYY-MM-DDT...") date string into a locale-formatted string,
+// building the Date from its year/month/day components directly rather than handing the raw
+// string to `new Date()` — the latter parses a plain date as UTC midnight, which can shift
+// the displayed day backward by one in negative-UTC-offset timezones
+function formatDate(dateString) {
+  const [year, month, day] = dateString.split('T')[0].split('-').map(Number);
+  return new Date(year, month - 1, day).toLocaleDateString(undefined, {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
+}
+
+// formats a start/end date pair (either may be omitted) into a single display string, e.g.
+// "Aug 2, 2026 – Aug 31, 2026", or just one side if only one date is set
+function formatDateRange(startDate, endDate) {
+  if (startDate && endDate) return `${formatDate(startDate)} – ${formatDate(endDate)}`;
+  if (startDate) return formatDate(startDate);
+  if (endDate) return formatDate(endDate);
+  return '';
+}
+
+function appendDates(body, startDate, endDate) {
+  const dateRange = formatDateRange(startDate, endDate);
+  if (!dateRange) return;
+  const datesEl = document.createElement('p');
+  datesEl.className = 'promotions-card-dates';
+  datesEl.textContent = dateRange;
+  body.append(datesEl);
+}
+
 /**
  * fetches a single Promotions content fragment item by its DAM path
  * @param {string} aemHost the AEM host to fetch the persisted query from
@@ -42,7 +73,8 @@ export async function fetchPromotionByPath(aemHost, fragmentPath) {
 /**
  * renders a Promotions content fragment item using the same .promotions-card markup shared
  * by the promotion, promotions, city-list and stores-by-city blocks
- * @param {object} item the content fragment item ({ title, main, featuredImage })
+ * @param {object} item the content fragment item ({ title, main, featuredImage, startDate,
+ * endDate })
  * @param {string} aemHost the AEM host, used to resolve relative image paths
  * @param {string} [style] optional "style-<value>" modifier class for this card
  * @param {string} [href] optional link URL — the fragment itself has no URL field, so the
@@ -87,6 +119,7 @@ export function renderPromotionCard(item, aemHost, style, href) {
     descriptionEl.textContent = trimBlurb(item.main.plaintext);
     body.append(descriptionEl);
   }
+  appendDates(body, item.startDate, item.endDate);
   link.append(body);
   li.append(link);
   return li;
@@ -113,19 +146,22 @@ async function loadCfCard(placeholder, fragmentPath, style, href) {
  * builds one promotion card from a "promotion" model's field divs — shared by the promotion
  * block (a single instance's own children) and the promotions block (one row's children per
  * authored item), since both use the exact same field set. Each set of fields is either a
- * static authored item (image/title/description/link) or, when a Content Fragment reference
- * is picked, fetched live from that fragment instead (fired in the background, not awaited
- * here — see loadCfCard).
+ * static authored item (image/title/description/link/dates) or, when a Content Fragment
+ * reference is picked, fetched live from that fragment instead (fired in the background, not
+ * awaited here — see loadCfCard) — the fragment's own startDate/endDate are used in that case.
  * @param {Element[]} fields the field divs, in [image, title, description, linkHref,
- * fragmentPath, style] order (imageAlt has no div of its own — AEM merges it into the
- * image div's <img alt> instead)
+ * startDate, endDate, fragmentPath, style] order (imageAlt has no div of its own — AEM merges
+ * it into the image div's <img alt> instead)
  * @param {Element} [instrumentationSource] when rendering one row of a list (as opposed to
  * a standalone block's own children), the authored row element to move Universal Editor's
  * editing instrumentation from, so the row stays individually selectable/editable
  * @returns {HTMLLIElement} the rendered (or not-yet-filled) <li class="promotions-card">
  */
 export function buildPromotionCard(fields, instrumentationSource) {
-  const [imageDiv, titleDiv, descriptionDiv, linkDiv, fragmentPathDiv, styleDiv] = fields;
+  const [
+    imageDiv, titleDiv, descriptionDiv, linkDiv,
+    startDateDiv, endDateDiv, fragmentPathDiv, styleDiv,
+  ] = fields;
   const fragmentPath = fragmentPathDiv?.textContent.trim();
   const style = styleDiv?.textContent.trim();
   const link = linkDiv?.querySelector('a');
@@ -145,6 +181,8 @@ export function buildPromotionCard(fields, instrumentationSource) {
   const picture = imageDiv?.querySelector('picture');
   const title = titleDiv?.textContent.trim();
   const description = descriptionDiv?.textContent.trim();
+  const startDate = startDateDiv?.textContent.trim();
+  const endDate = endDateDiv?.textContent.trim();
 
   const container = href ? document.createElement('a') : document.createElement('div');
   if (href) container.href = href;
@@ -174,6 +212,7 @@ export function buildPromotionCard(fields, instrumentationSource) {
     descriptionEl.textContent = description;
     body.append(descriptionEl);
   }
+  appendDates(body, startDate, endDate);
   container.append(body);
   li.append(container);
   return li;

@@ -52,6 +52,18 @@
           "label": "Link URL"
         },
         {
+          "component": "date",
+          "valueType": "string",
+          "name": "startDate",
+          "label": "Start Date"
+        },
+        {
+          "component": "date",
+          "valueType": "string",
+          "name": "endDate",
+          "label": "End Date"
+        },
+        {
           "component": "aem-content-fragment",
           "valueType": "string",
           "name": "fragmentPath",
