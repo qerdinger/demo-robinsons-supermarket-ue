@@ -1,5 +1,5 @@
 import getGraphqlHost from '../../scripts/graphql-host.js';
-import { fetchPromotionByPath, renderPromotionCard, extractFragmentPath } from '../../scripts/promotion-fragment.js';
+import { fetchPromotionByPath, renderPromotionCard } from '../../scripts/promotion-fragment.js';
 
 // fetches the persisted query for the given fragment path and appends the resulting card to
 // the block. Not awaited by decorate(), so it never blocks the rest of the page's
@@ -20,7 +20,9 @@ async function loadCard(ul, aemHost, fragmentPath, style) {
  */
 export default function decorate(block) {
   const [fragmentPathDiv, styleDiv] = block.children;
-  const fragmentPath = extractFragmentPath(fragmentPathDiv?.querySelector('a'));
+  // the "aem-content-fragment" field renders its picked path as plain text, unlike
+  // "reference"/"aem-content" which wrap it in a link
+  const fragmentPath = fragmentPathDiv?.textContent.trim();
   const style = styleDiv?.textContent.trim();
 
   block.classList.add('promotions');

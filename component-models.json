@@ -325,10 +325,13 @@
     "id": "promotion",
     "fields": [
       {
-        "component": "aem-content",
+        "component": "aem-content-fragment",
         "valueType": "string",
         "name": "fragmentPath",
-        "label": "Promotion (Content Fragment)"
+        "label": "Promotion (Content Fragment)",
+        "validation": {
+          "rootPath": "/content/dam/rrhi/promotions-cf"
+        }
       },
       {
         "component": "select",
@@ -404,10 +407,13 @@
         "label": "Link URL"
       },
       {
-        "component": "aem-content",
+        "component": "aem-content-fragment",
         "valueType": "string",
         "name": "fragmentPath",
-        "label": "Promotion (Content Fragment) — when set, fetches this item from the CF instead of the authored fields above"
+        "label": "Promotion (Content Fragment) — when set, fetches this item from the CF instead of the authored fields above",
+        "validation": {
+          "rootPath": "/content/dam/rrhi/promotions-cf"
+        }
       },
       {
         "component": "select",

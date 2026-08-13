@@ -10,19 +10,6 @@ function trimBlurb(text, maxLength = 160) {
 }
 
 /**
- * extracts a DAM path from an "aem-content" field's rendered <a>, matching the same
- * convention blocks/fragment/fragment.js uses for its own aem-content field: read the href
- * attribute (not the link text, whose content isn't guaranteed the same way "reference"
- * fields' text is) and strip AEM's appended ".html"/".plain.html" suffix.
- * @param {HTMLAnchorElement} [anchor] the field's rendered link, if any
- * @returns {string|null} the clean DAM path, or null if there's no link
- */
-export function extractFragmentPath(anchor) {
-  if (!anchor) return null;
-  return anchor.getAttribute('href')?.replace(/(\.plain)?\.html$/, '') || null;
-}
-
-/**
  * fetches a single Promotions content fragment item by its DAM path
  * @param {string} aemHost the AEM host to fetch the persisted query from
  * @param {string} fragmentPath the fragment's absolute DAM path (e.g. picked via a

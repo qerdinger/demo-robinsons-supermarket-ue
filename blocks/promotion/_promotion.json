@@ -21,10 +21,13 @@
       "id": "promotion",
       "fields": [
         {
-          "component": "aem-content",
+          "component": "aem-content-fragment",
           "valueType": "string",
           "name": "fragmentPath",
-          "label": "Promotion (Content Fragment)"
+          "label": "Promotion (Content Fragment)",
+          "validation": {
+            "rootPath": "/content/dam/rrhi/promotions-cf"
+          }
         },
         {
           "component": "select",

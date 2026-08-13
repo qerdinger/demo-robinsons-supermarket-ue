@@ -1,7 +1,7 @@
 import { createOptimizedPicture } from '../../scripts/aem.js';
 import { moveInstrumentation } from '../../scripts/scripts.js';
 import getGraphqlHost from '../../scripts/graphql-host.js';
-import { fetchPromotionByPath, renderPromotionCard, extractFragmentPath } from '../../scripts/promotion-fragment.js';
+import { fetchPromotionByPath, renderPromotionCard } from '../../scripts/promotion-fragment.js';
 
 // fetches a CF item by its fragment path and fills the placeholder card in once it arrives.
 // Updates the placeholder's own class/content in place rather than replacing the element
@@ -31,7 +31,9 @@ export default function decorate(block) {
   [...block.children].forEach((row) => {
     // note: the model's imageAlt field is merged by AEM into <img alt>, not rendered as its own div
     const [imageDiv, titleDiv, descriptionDiv, linkDiv, fragmentPathDiv, styleDiv] = row.children;
-    const fragmentPath = extractFragmentPath(fragmentPathDiv?.querySelector('a'));
+    // the "aem-content-fragment" field renders its picked path as plain text, unlike
+    // "reference"/"aem-content" which wrap it in a link
+    const fragmentPath = fragmentPathDiv?.textContent.trim();
     const style = styleDiv?.textContent.trim();
     const link = linkDiv?.querySelector('a');
     const href = link ? link.href : linkDiv?.textContent.trim();
