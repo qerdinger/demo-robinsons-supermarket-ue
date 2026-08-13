@@ -21,55 +21,13 @@
       "id": "promotion",
       "fields": [
         {
-          "component": "reference",
-          "valueType": "string",
-          "name": "image",
-          "label": "Image",
-          "multi": false
-        },
-        {
-          "component": "text",
-          "valueType": "string",
-          "name": "imageAlt",
-          "label": "Alt Text"
-        },
-        {
-          "component": "text",
-          "valueType": "string",
-          "name": "title",
-          "label": "Title"
-        },
-        {
-          "component": "text",
-          "valueType": "string",
-          "name": "description",
-          "label": "Description"
-        },
-        {
-          "component": "text",
-          "valueType": "string",
-          "name": "linkHref",
-          "label": "Link URL"
-        },
-        {
-          "component": "date-time",
-          "valueType": "date",
-          "name": "startDate",
-          "label": "Start Date"
-        },
-        {
-          "component": "date-time",
-          "valueType": "date",
-          "name": "endDate",
-          "label": "End Date"
-        },
-        {
           "component": "aem-content-fragment",
           "valueType": "string",
           "name": "fragmentPath",
-          "label": "Promotion (Content Fragment) — optional; when set, takes over from the authored fields above",
+          "label": "Promotion (Content Fragment)",
           "validation": {
-            "rootPath": "/content/dam/rrhi/promotions-cf"
+            "rootPath": "/content/dam/rrhi/promotions-cf",
+            "required": true
           }
         },
         {

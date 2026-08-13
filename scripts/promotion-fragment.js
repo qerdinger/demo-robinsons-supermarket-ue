@@ -1,4 +1,3 @@
-import { createOptimizedPicture } from './aem.js';
 import { moveInstrumentation } from './scripts.js';
 import getGraphqlHost from './graphql-host.js';
 
@@ -71,10 +70,10 @@ export async function fetchPromotionByPath(aemHost, fragmentPath) {
 }
 
 /**
- * renders a Promotions content fragment item using the same .promotions-card markup shared
- * by the promotion, promotions, city-list and stores-by-city blocks
+ * renders a Promotions content fragment item using the .promotions-card markup shared by the
+ * promotion, promotions, city-list and stores-by-city blocks
  * @param {object} item the content fragment item ({ title, main, featuredImage, startDate,
- * endDate })
+ * endDate }) — startDate/endDate are optional fields on the fragment itself
  * @param {string} aemHost the AEM host, used to resolve relative image paths
  * @param {string} [style] optional "style-<value>" modifier class for this card
  * @param {string} [href] optional link URL — the fragment itself has no URL field, so the
@@ -145,75 +144,24 @@ async function loadCfCard(placeholder, fragmentPath, style, href) {
 /**
  * builds one promotion card from a "promotion" model's field divs — shared by the promotion
  * block (a single instance's own children) and the promotions block (one row's children per
- * authored item), since both use the exact same field set. Each set of fields is either a
- * static authored item (image/title/description/link/dates) or, when a Content Fragment
- * reference is picked, fetched live from that fragment instead (fired in the background, not
- * awaited here — see loadCfCard) — the fragment's own startDate/endDate are used in that case.
- * @param {Element[]} fields the field divs, in [image, title, description, linkHref,
- * startDate, endDate, fragmentPath, style] order (imageAlt has no div of its own — AEM merges
- * it into the image div's <img alt> instead)
+ * authored item), since both use the exact same field set. The Content Fragment reference is
+ * the only content source; the card is fetched live from that fragment (fired in the
+ * background, not awaited here — see loadCfCard).
+ * @param {Element[]} fields the field divs, in [fragmentPath, style] order
  * @param {Element} [instrumentationSource] when rendering one row of a list (as opposed to
  * a standalone block's own children), the authored row element to move Universal Editor's
  * editing instrumentation from, so the row stays individually selectable/editable
  * @returns {HTMLLIElement} the rendered (or not-yet-filled) <li class="promotions-card">
  */
 export function buildPromotionCard(fields, instrumentationSource) {
-  const [
-    imageDiv, titleDiv, descriptionDiv, linkDiv,
-    startDateDiv, endDateDiv, fragmentPathDiv, styleDiv,
-  ] = fields;
+  const [fragmentPathDiv, styleDiv] = fields;
   const fragmentPath = fragmentPathDiv?.textContent.trim();
   const style = styleDiv?.textContent.trim();
-  const link = linkDiv?.querySelector('a');
-  const href = link ? link.href : linkDiv?.textContent.trim();
 
   const li = document.createElement('li');
   li.className = 'promotions-card';
   if (instrumentationSource) moveInstrumentation(instrumentationSource, li);
 
-  if (fragmentPath) {
-    loadCfCard(li, fragmentPath, style, href);
-    return li;
-  }
-
-  if (style && style !== 'default') li.classList.add(`style-${style}`);
-
-  const picture = imageDiv?.querySelector('picture');
-  const title = titleDiv?.textContent.trim();
-  const description = descriptionDiv?.textContent.trim();
-  const startDate = startDateDiv?.textContent.trim();
-  const endDate = endDateDiv?.textContent.trim();
-
-  const container = href ? document.createElement('a') : document.createElement('div');
-  if (href) container.href = href;
-  container.className = 'promotions-card-link';
-
-  if (picture) {
-    const imageWrapper = document.createElement('div');
-    imageWrapper.className = 'promotions-card-image';
-    const img = picture.querySelector('img');
-    const optimizedPic = createOptimizedPicture(img.src, img.alt, false, [{ width: '750' }]);
-    moveInstrumentation(img, optimizedPic.querySelector('img'));
-    imageWrapper.append(optimizedPic);
-    container.append(imageWrapper);
-  }
-
-  const body = document.createElement('div');
-  body.className = 'promotions-card-body';
-  if (title) {
-    const titleEl = document.createElement('p');
-    titleEl.className = 'promotions-card-title';
-    titleEl.textContent = title;
-    body.append(titleEl);
-  }
-  if (description) {
-    const descriptionEl = document.createElement('p');
-    descriptionEl.className = 'promotions-card-description';
-    descriptionEl.textContent = description;
-    body.append(descriptionEl);
-  }
-  appendDates(body, startDate, endDate);
-  container.append(body);
-  li.append(container);
+  if (fragmentPath) loadCfCard(li, fragmentPath, style);
   return li;
 }
