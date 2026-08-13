@@ -356,14 +356,14 @@
         "label": "Link URL"
       },
       {
-        "component": "date",
-        "valueType": "string",
+        "component": "date-time",
+        "valueType": "date",
         "name": "startDate",
         "label": "Start Date"
       },
       {
-        "component": "date",
-        "valueType": "string",
+        "component": "date-time",
+        "valueType": "date",
         "name": "endDate",
         "label": "End Date"
       },
