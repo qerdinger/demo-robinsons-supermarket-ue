@@ -330,8 +330,7 @@
         "name": "fragmentPath",
         "label": "Promotion (Content Fragment)",
         "validation": {
-          "rootPath": "/content/dam/rrhi/promotions-cf",
-          "required": true
+          "rootPath": "/content/dam/rrhi/promotions-cf"
         }
       },
       {
