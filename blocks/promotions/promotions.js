@@ -9,7 +9,8 @@ import { buildPromotionCard } from '../../scripts/promotion-fragment.js';
 export default function decorate(block) {
   const ul = document.createElement('ul');
   [...block.children].forEach((row) => {
-    ul.append(buildPromotionCard([...row.children], row));
+    const card = buildPromotionCard([...row.children], row);
+    if (card) ul.append(card);
   });
   block.replaceChildren(ul);
 }
