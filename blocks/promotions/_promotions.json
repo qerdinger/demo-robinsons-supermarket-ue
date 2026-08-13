@@ -67,10 +67,11 @@
           "label": "Link URL"
         },
         {
-          "component": "text",
+          "component": "reference",
           "valueType": "string",
-          "name": "slug",
-          "label": "Slug (Content Fragment) — when set, fetches this item from the CF instead of the authored fields above"
+          "name": "fragmentPath",
+          "label": "Promotion (Content Fragment) — when set, fetches this item from the CF instead of the authored fields above",
+          "multi": false
         },
         {
           "component": "select",

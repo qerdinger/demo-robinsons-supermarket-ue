@@ -21,10 +21,11 @@
       "id": "promotion",
       "fields": [
         {
-          "component": "text",
+          "component": "reference",
           "valueType": "string",
-          "name": "slug",
-          "label": "Slug (matches one item's \"slug\" field)"
+          "name": "fragmentPath",
+          "label": "Promotion (Content Fragment)",
+          "multi": false
         },
         {
           "component": "select",

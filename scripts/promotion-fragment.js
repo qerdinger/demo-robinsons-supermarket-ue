@@ -1,6 +1,8 @@
-// the promotion-by-slug persisted query filters by slug server-side, so this always
-// resolves to exactly the one matching item (no client-side filtering needed)
-const QUERY_PATH = 'Robinson/promotion-by-slug';
+// the promotion-by-path persisted query filters by the fragment's DAM path server-side, so
+// this always resolves to exactly the matching item (no client-side filtering needed). The
+// path itself comes from a Universal Editor content-reference picker rather than a
+// hand-typed slug, so it's always valid at the time it's authored.
+const QUERY_PATH = 'Robinson/promotion-by-path';
 
 function trimBlurb(text, maxLength = 160) {
   const trimmed = text.trim();
@@ -8,23 +10,23 @@ function trimBlurb(text, maxLength = 160) {
 }
 
 /**
- * fetches a single Promotions content fragment item by its "slug" field
+ * fetches a single Promotions content fragment item by its DAM path
  * @param {string} aemHost the AEM host to fetch the persisted query from
- * @param {string} slug the fragment's "slug" field value to match
+ * @param {string} fragmentPath the fragment's absolute DAM path (e.g. picked via a
+ * Universal Editor reference field)
  * @returns {Promise<object|null>} the matching item, or null if not found
  */
-export async function fetchPromotionBySlug(aemHost, slug) {
-  const url = `${aemHost}/graphql/execute.json/${QUERY_PATH};slug=${encodeURIComponent(slug)}`;
+export async function fetchPromotionByPath(aemHost, fragmentPath) {
+  const url = `${aemHost}/graphql/execute.json/${QUERY_PATH};promotionPath=${encodeURIComponent(fragmentPath)}`;
   try {
     const res = await fetch(url);
     if (!res.ok) throw new Error(`GraphQL request failed: ${res.status}`);
     const json = await res.json();
     if (json.errors) throw new Error(`GraphQL errors: ${JSON.stringify(json.errors)}`);
-    const items = Object.values(json?.data || {})[0]?.items || [];
-    return items[0] || null;
+    return Object.values(json?.data || {})[0]?.item || null;
   } catch (error) {
     // eslint-disable-next-line no-console
-    console.error(`promotion-fragment: failed to load slug "${slug}"`, error);
+    console.error(`promotion-fragment: failed to load path "${fragmentPath}"`, error);
     return null;
   }
 }
@@ -36,7 +38,7 @@ export async function fetchPromotionBySlug(aemHost, slug) {
  * @param {string} aemHost the AEM host, used to resolve relative image paths
  * @param {string} [style] optional "style-<value>" modifier class for this card
  * @param {string} [href] optional link URL — the fragment itself has no URL field, so the
- * whole card is only clickable when the author supplies one alongside the slug
+ * whole card is only clickable when the author supplies one alongside the fragment reference
  * @returns {HTMLLIElement} the rendered card
  */
 export function renderPromotionCard(item, aemHost, style, href) {

@@ -1,18 +1,18 @@
 import { createOptimizedPicture } from '../../scripts/aem.js';
 import { moveInstrumentation } from '../../scripts/scripts.js';
 import getGraphqlHost from '../../scripts/graphql-host.js';
-import { fetchPromotionBySlug, renderPromotionCard } from '../../scripts/promotion-fragment.js';
+import { fetchPromotionByPath, renderPromotionCard } from '../../scripts/promotion-fragment.js';
 
-// fetches a CF item by slug and fills the placeholder card in once it arrives. Updates the
-// placeholder's own class/content in place rather than replacing the element outright —
-// moveInstrumentation (below) attaches Universal Editor's data-aue-* markers to the
-// placeholder itself, so swapping in a brand-new element here would silently drop them,
+// fetches a CF item by its fragment path and fills the placeholder card in once it arrives.
+// Updates the placeholder's own class/content in place rather than replacing the element
+// outright — moveInstrumentation (below) attaches Universal Editor's data-aue-* markers to
+// the placeholder itself, so swapping in a brand-new element here would silently drop them,
 // making the item unselectable/invisible in the editor. Not awaited by decorate(), so a
-// slug-backed row never blocks the rest of the page's sections from loading (see
+// CF-backed row never blocks the rest of the page's sections from loading (see
 // loadSections/loadSection in scripts/aem.js, which await each section/block in sequence).
-async function loadCfCard(placeholder, slug, style, href) {
+async function loadCfCard(placeholder, fragmentPath, style, href) {
   const aemHost = getGraphqlHost();
-  const item = await fetchPromotionBySlug(aemHost, slug);
+  const item = await fetchPromotionByPath(aemHost, fragmentPath);
   if (!item) return;
   const card = renderPromotionCard(item, aemHost, style, href);
   placeholder.className = card.className;
@@ -21,8 +21,8 @@ async function loadCfCard(placeholder, slug, style, href) {
 
 /**
  * loads and decorates the promotions block. Each authored row is either a static item
- * (image/title/description/link) or, when a "slug" is set, fetched live from a Content
- * Fragment matching that slug (see loadCfCard) — the same query used by the promotion block.
+ * (image/title/description/link) or, when a Content Fragment reference is picked, fetched
+ * live from that fragment (see loadCfCard) — the same query used by the promotion block.
  * @param {Element} block The promotions block element
  */
 export default function decorate(block) {
@@ -30,18 +30,22 @@ export default function decorate(block) {
 
   [...block.children].forEach((row) => {
     // note: the model's imageAlt field is merged by AEM into <img alt>, not rendered as its own div
-    const [imageDiv, titleDiv, descriptionDiv, linkDiv, slugDiv, styleDiv] = row.children;
-    const slug = slugDiv?.textContent.trim();
+    const [imageDiv, titleDiv, descriptionDiv, linkDiv, fragmentPathDiv, styleDiv] = row.children;
+    // the "reference" field renders as <a href="/content/dam/....html">/content/dam/...</a> —
+    // AEM appends a stray ".html" to the href but not to the link text, so read the text
+    // content for the clean DAM path rather than the href (which is also, separately, not
+    // usable as-is: it'd resolve to an absolute URL against the current page's own origin)
+    const fragmentPath = fragmentPathDiv?.querySelector('a')?.textContent.trim();
     const style = styleDiv?.textContent.trim();
     const link = linkDiv?.querySelector('a');
     const href = link ? link.href : linkDiv?.textContent.trim();
 
-    if (slug) {
+    if (fragmentPath) {
       const placeholder = document.createElement('li');
       placeholder.className = 'promotions-card';
       moveInstrumentation(row, placeholder);
       ul.append(placeholder);
-      loadCfCard(placeholder, slug, style, href);
+      loadCfCard(placeholder, fragmentPath, style, href);
       return;
     }
 
