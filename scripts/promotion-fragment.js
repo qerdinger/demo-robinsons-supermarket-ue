@@ -30,7 +30,11 @@ export function extractFragmentPath(anchor) {
  * @returns {Promise<object|null>} the matching item, or null if not found
  */
 export async function fetchPromotionByPath(aemHost, fragmentPath) {
-  const url = `${aemHost}/graphql/execute.json/${QUERY_PATH};promotionPath=${encodeURIComponent(fragmentPath)}`;
+  // deliberately NOT url-encoded: AEM's persisted-query matrix-parameter parsing doesn't
+  // decode "%2F" back to "/" for this value, so encodeURIComponent would mangle the path
+  // into something the server reports as "no resource available" — the literal path with
+  // real slashes is what this query expects
+  const url = `${aemHost}/graphql/execute.json/${QUERY_PATH};promotionPath=${fragmentPath}`;
   try {
     const res = await fetch(url);
     if (!res.ok) throw new Error(`GraphQL request failed: ${res.status}`);
