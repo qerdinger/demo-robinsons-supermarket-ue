@@ -92,18 +92,59 @@ export function renderPromotionCard(item, aemHost, style, href) {
   return li;
 }
 
-// fills an <li class="promotions-card"> with the statically authored fields (image/title/
-// description/link). Returns false (and leaves the <li> untouched) when there's nothing
-// authored to show, so the caller can decide to drop the card entirely instead of leaving an
-// empty box on the page.
-function fillStaticCard(li, imageDiv, titleDiv, descriptionDiv, style, href) {
+// fetches a CF item by its fragment path and fills the placeholder card in once it arrives.
+// Updates the placeholder's own class/content in place rather than replacing the element
+// outright — a caller may have attached Universal Editor's data-aue-* markers to the
+// placeholder itself (see moveInstrumentation in buildPromotionCard below), and swapping in
+// a brand-new element here would silently drop them, making the item unselectable/invisible
+// in the editor. Not awaited by the caller, so a CF-backed card never blocks the rest of the
+// page's sections from loading (see loadSections/loadSection in scripts/aem.js, which await
+// each section/block in sequence).
+async function loadCfCard(placeholder, fragmentPath, style, href) {
+  const aemHost = getGraphqlHost();
+  const item = await fetchPromotionByPath(aemHost, fragmentPath);
+  if (!item) return;
+  const card = renderPromotionCard(item, aemHost, style, href);
+  placeholder.className = card.className;
+  placeholder.replaceChildren(...card.childNodes);
+}
+
+/**
+ * builds one promotion card from a "promotion" model's field divs — shared by the promotion
+ * block (a single instance's own children) and the promotions block (one row's children per
+ * authored item), since both use the exact same field set. Each set of fields is either a
+ * static authored item (image/title/description/link) or, when a Content Fragment reference
+ * is picked, fetched live from that fragment instead (fired in the background, not awaited
+ * here — see loadCfCard).
+ * @param {Element[]} fields the field divs, in [image, title, description, linkHref,
+ * fragmentPath, style] order (imageAlt has no div of its own — AEM merges it into the
+ * image div's <img alt> instead)
+ * @param {Element} [instrumentationSource] when rendering one row of a list (as opposed to
+ * a standalone block's own children), the authored row element to move Universal Editor's
+ * editing instrumentation from, so the row stays individually selectable/editable
+ * @returns {HTMLLIElement} the rendered (or not-yet-filled) <li class="promotions-card">
+ */
+export function buildPromotionCard(fields, instrumentationSource) {
+  const [imageDiv, titleDiv, descriptionDiv, linkDiv, fragmentPathDiv, styleDiv] = fields;
+  const fragmentPath = fragmentPathDiv?.textContent.trim();
+  const style = styleDiv?.textContent.trim();
+  const link = linkDiv?.querySelector('a');
+  const href = link ? link.href : linkDiv?.textContent.trim();
+
+  const li = document.createElement('li');
+  li.className = 'promotions-card';
+  if (instrumentationSource) moveInstrumentation(instrumentationSource, li);
+
+  if (fragmentPath) {
+    loadCfCard(li, fragmentPath, style, href);
+    return li;
+  }
+
+  if (style && style !== 'default') li.classList.add(`style-${style}`);
+
   const picture = imageDiv?.querySelector('picture');
   const title = titleDiv?.textContent.trim();
   const description = descriptionDiv?.textContent.trim();
-
-  if (!picture && !title && !description && !href) return false;
-
-  if (style && style !== 'default') li.classList.add(`style-${style}`);
 
   const container = href ? document.createElement('a') : document.createElement('div');
   if (href) container.href = href;
@@ -135,67 +176,5 @@ function fillStaticCard(li, imageDiv, titleDiv, descriptionDiv, style, href) {
   }
   container.append(body);
   li.append(container);
-  return true;
-}
-
-// fetches a CF item by its fragment path and fills the placeholder card in once it arrives.
-// Updates the placeholder's own class/content in place rather than replacing the element
-// outright — a caller may have attached Universal Editor's data-aue-* markers to the
-// placeholder itself (see moveInstrumentation in buildPromotionCard below), and swapping in
-// a brand-new element here would silently drop them, making the item unselectable/invisible
-// in the editor. If the fragment can't be found (bad/stale path), falls back to whatever
-// static fields were authored alongside it; if there's nothing to fall back to either, the
-// placeholder is removed so no empty card shows. Not awaited by the caller, so a CF-backed
-// card never blocks the rest of the page's sections from loading (see loadSections/
-// loadSection in scripts/aem.js, which await each section/block in sequence).
-async function loadCfCard(placeholder, fragmentPath, imageDiv, titleDiv, descDiv, style, href) {
-  const aemHost = getGraphqlHost();
-  const item = await fetchPromotionByPath(aemHost, fragmentPath);
-  if (item) {
-    const card = renderPromotionCard(item, aemHost, style, href);
-    placeholder.className = card.className;
-    placeholder.replaceChildren(...card.childNodes);
-    return;
-  }
-  const hasFallback = fillStaticCard(placeholder, imageDiv, titleDiv, descDiv, style, href);
-  if (!hasFallback) placeholder.remove();
-}
-
-/**
- * builds one promotion card from a "promotion" model's field divs — shared by the promotion
- * block (a single instance's own children) and the promotions block (one row's children per
- * authored item), since both use the exact same field set. When a Content Fragment reference
- * is picked, it's fetched live and takes over (fired in the background, not awaited here —
- * see loadCfCard), falling back to the statically authored fields if the fragment can't be
- * found; otherwise the static fields render directly. If there's nothing to show either way,
- * returns null so the caller can skip this card entirely.
- * @param {Element[]} fields the field divs, in [image, title, description, linkHref,
- * fragmentPath, style] order (imageAlt has no div of its own — AEM merges it into the
- * image div's <img alt> instead)
- * @param {Element} [instrumentationSource] when rendering one row of a list (as opposed to
- * a standalone block's own children), the authored row element to move Universal Editor's
- * editing instrumentation from, so the row stays individually selectable/editable
- * @returns {HTMLLIElement|null} the rendered (or not-yet-filled) <li class="promotions-card">,
- * or null if there's nothing authored to show
- */
-export function buildPromotionCard(fields, instrumentationSource) {
-  const [imageDiv, titleDiv, descriptionDiv, linkDiv, fragmentPathDiv, styleDiv] = fields;
-  const fragmentPath = fragmentPathDiv?.textContent.trim();
-  const style = styleDiv?.textContent.trim();
-  const link = linkDiv?.querySelector('a');
-  const href = link ? link.href : linkDiv?.textContent.trim();
-
-  const li = document.createElement('li');
-  li.className = 'promotions-card';
-  if (instrumentationSource) moveInstrumentation(instrumentationSource, li);
-
-  if (fragmentPath) {
-    // fired in the background — until it resolves (or falls back, or removes itself), this
-    // placeholder just sits in the list with its instrumentation already attached
-    loadCfCard(li, fragmentPath, imageDiv, titleDiv, descriptionDiv, style, href);
-    return li;
-  }
-
-  const hasContent = fillStaticCard(li, imageDiv, titleDiv, descriptionDiv, style, href);
-  return hasContent ? li : null;
+  return li;
 }

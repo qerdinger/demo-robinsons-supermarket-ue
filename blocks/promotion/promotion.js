@@ -11,7 +11,7 @@ import { buildPromotionCard } from '../../scripts/promotion-fragment.js';
 export default function decorate(block) {
   const card = buildPromotionCard([...block.children]);
   const ul = document.createElement('ul');
-  if (card) ul.append(card);
+  ul.append(card);
   block.classList.add('promotions');
   block.replaceChildren(ul);
 }
