@@ -1,5 +1,5 @@
 import getGraphqlHost from '../../scripts/graphql-host.js';
-import { fetchPromotionByPath, renderPromotionCard } from '../../scripts/promotion-fragment.js';
+import { fetchPromotionByPath, renderPromotionCard, extractFragmentPath } from '../../scripts/promotion-fragment.js';
 
 // fetches the persisted query for the given fragment path and appends the resulting card to
 // the block. Not awaited by decorate(), so it never blocks the rest of the page's
@@ -20,11 +20,7 @@ async function loadCard(ul, aemHost, fragmentPath, style) {
  */
 export default function decorate(block) {
   const [fragmentPathDiv, styleDiv] = block.children;
-  // the "reference" field renders as <a href="/content/dam/....html">/content/dam/...</a> —
-  // AEM appends a stray ".html" to the href but not to the link text, so read the text
-  // content for the clean DAM path rather than the href (which is also, separately, not
-  // usable as-is: it'd resolve to an absolute URL against the current page's own origin)
-  const fragmentPath = fragmentPathDiv?.querySelector('a')?.textContent.trim();
+  const fragmentPath = extractFragmentPath(fragmentPathDiv?.querySelector('a'));
   const style = styleDiv?.textContent.trim();
 
   block.classList.add('promotions');

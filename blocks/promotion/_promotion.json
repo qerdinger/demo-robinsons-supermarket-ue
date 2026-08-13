@@ -21,11 +21,10 @@
       "id": "promotion",
       "fields": [
         {
-          "component": "reference",
+          "component": "aem-content",
           "valueType": "string",
           "name": "fragmentPath",
-          "label": "Promotion (Content Fragment)",
-          "multi": false
+          "label": "Promotion (Content Fragment)"
         },
         {
           "component": "select",

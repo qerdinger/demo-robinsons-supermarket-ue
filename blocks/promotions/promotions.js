@@ -1,7 +1,7 @@
 import { createOptimizedPicture } from '../../scripts/aem.js';
 import { moveInstrumentation } from '../../scripts/scripts.js';
 import getGraphqlHost from '../../scripts/graphql-host.js';
-import { fetchPromotionByPath, renderPromotionCard } from '../../scripts/promotion-fragment.js';
+import { fetchPromotionByPath, renderPromotionCard, extractFragmentPath } from '../../scripts/promotion-fragment.js';
 
 // fetches a CF item by its fragment path and fills the placeholder card in once it arrives.
 // Updates the placeholder's own class/content in place rather than replacing the element
@@ -31,11 +31,7 @@ export default function decorate(block) {
   [...block.children].forEach((row) => {
     // note: the model's imageAlt field is merged by AEM into <img alt>, not rendered as its own div
     const [imageDiv, titleDiv, descriptionDiv, linkDiv, fragmentPathDiv, styleDiv] = row.children;
-    // the "reference" field renders as <a href="/content/dam/....html">/content/dam/...</a> —
-    // AEM appends a stray ".html" to the href but not to the link text, so read the text
-    // content for the clean DAM path rather than the href (which is also, separately, not
-    // usable as-is: it'd resolve to an absolute URL against the current page's own origin)
-    const fragmentPath = fragmentPathDiv?.querySelector('a')?.textContent.trim();
+    const fragmentPath = extractFragmentPath(fragmentPathDiv?.querySelector('a'));
     const style = styleDiv?.textContent.trim();
     const link = linkDiv?.querySelector('a');
     const href = link ? link.href : linkDiv?.textContent.trim();

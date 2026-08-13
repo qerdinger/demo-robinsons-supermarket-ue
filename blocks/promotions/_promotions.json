@@ -67,11 +67,10 @@
           "label": "Link URL"
         },
         {
-          "component": "reference",
+          "component": "aem-content",
           "valueType": "string",
           "name": "fragmentPath",
-          "label": "Promotion (Content Fragment) — when set, fetches this item from the CF instead of the authored fields above",
-          "multi": false
+          "label": "Promotion (Content Fragment) — when set, fetches this item from the CF instead of the authored fields above"
         },
         {
           "component": "select",
