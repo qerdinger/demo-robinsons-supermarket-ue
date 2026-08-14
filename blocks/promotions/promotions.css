@@ -1,6 +1,8 @@
 .promotions > ul {
   display: grid;
   grid-template-columns: 1fr;
+  /* keep each card sized to its own content instead of stretching to the tallest in its row */
+  align-items: start;
   gap: 24px;
   margin: 0;
   padding: 0;
