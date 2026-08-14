@@ -76,7 +76,9 @@ main .section:has(.promotions) .button-wrapper .button:focus-visible {
 
 @media (width >= 600px) {
   .promotions > ul {
-    grid-template-columns: repeat(3, 1fr);
+    /* auto-fill instead of a fixed 3-column repeat so 1, 2, 4+ authored promotions
+       all lay out flexibly instead of leaving gaps or forcing 3 columns */
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   }
 }
 
